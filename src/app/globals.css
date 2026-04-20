@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ─── Brand Design Tokens ───────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --bg:           #05050e;
+  --surface-1:    #0c0c1a;
+  --surface-2:    #111124;
+  --surface-3:    #161630;
+  --border:       rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.12);
+
+  /* Brand palette — Lumière */
+  --brand:        #7c3aed;
+  --brand-light:  #a78bfa;
+  --brand-glow:   rgba(124,58,237,0.25);
+
+  /* Semantic */
+  --scale:   #10b981;
+  --scale-bg: rgba(16,185,129,0.08);
+  --kill:    #ef4444;
+  --kill-bg:  rgba(239,68,68,0.08);
+  --hold:    #6366f1;
+  --hold-bg:  rgba(99,102,241,0.08);
+  --fix:     #f59e0b;
+  --fix-bg:   rgba(245,158,11,0.08);
+
+  /* Text */
+  --text-1: #f4f4f8;
+  --text-2: #9ca3b0;
+  --text-3: #4b5263;
+
+  /* Typography */
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Spacing (8pt grid) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-8: 2rem;
+  --s-10: 2.5rem;
+  --s-12: 3rem;
+
+  /* Radius */
+  --r-sm: 0.5rem;
+  --r-md: 0.75rem;
+  --r-lg: 1rem;
+  --r-xl: 1.25rem;
+
+  /* Transitions */
+  --t-fast: 120ms ease;
+  --t-base: 200ms ease;
+  --t-slow: 350ms ease;
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbars ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+/* ─── Selection ──────────────────────────────────────────────────── */
+::selection { background: var(--brand-glow); color: var(--text-1); }
+
+/* ─── Global subtle grid bg ─────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ─── Glow pulse animation ───────────────────────────────────────── */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+/* ─── Fade-in ────────────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.4s ease forwards;
+}
+
+/* ─── Card hover glow ────────────────────────────────────────────── */
+.card-glow {
+  position: relative;
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+}
+.card-glow:hover {
+  border-color: var(--border-hover) !important;
+  box-shadow: 0 0 0 1px rgba(124,58,237,0.1), 0 8px 32px rgba(0,0,0,0.4);
+}

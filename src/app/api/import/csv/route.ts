@@ -1,7 +1,26 @@
 import { NextResponse } from 'next/server';
 import { runDecisionEngine, runPortfolio } from '@/lib/engine';
-import { benchmarks } from '@/lib/seed';
-import { Ad, AdPerformance, Platform } from '@/lib/types';
+import { Ad, AdPerformance, Platform, AccountBenchmarks } from '@/lib/types';
+
+/** Derive account-level benchmarks (medians) from the uploaded ad set */
+function computeBenchmarks(ads: Ad[]): AccountBenchmarks {
+  if (ads.length === 0) {
+    return { medianRoas: 2.4, medianCtr: 0.022, medianCvr: 0.031, medianCpa: 38 };
+  }
+  const median = (vals: number[]) => {
+    const sorted = [...vals].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0
+      ? (sorted[mid - 1] + sorted[mid]) / 2
+      : sorted[mid];
+  };
+  return {
+    medianRoas: median(ads.map(a => a.performance.roas)),
+    medianCtr:  median(ads.map(a => a.performance.ctr)),
+    medianCvr:  median(ads.map(a => a.performance.cvr)),
+    medianCpa:  median(ads.filter(a => a.performance.cpa > 0).map(a => a.performance.cpa)),
+  };
+}
 
 /**
  * Accepts a Meta Ads Manager CSV export and returns decisions.
@@ -105,13 +124,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'No valid ad rows found. Check your CSV format.' }, { status: 400 });
   }
 
-  // Run the decision engine
-  const decisions = ads.map(ad => runDecisionEngine(ad, benchmarks));
+  // Compute dynamic benchmarks from the uploaded ads
+  const computedBenchmarks = computeBenchmarks(ads);
+
+  // Run the decision engine using the computed benchmarks
+  const decisions = ads.map(ad => runDecisionEngine(ad, computedBenchmarks));
   const portfolio  = runPortfolio(decisions);
 
   return NextResponse.json({
     source:    'csv_import',
     adsFound:  ads.length,
+    ads,
+    benchmarks: computedBenchmarks,
     decisions,
     portfolio,
   });

@@ -1,14 +1,15 @@
 'use client';
 
 import { useMemo } from 'react';
-import { ads, benchmarks } from '@/lib/seed';
+import { useDataSource } from '@/lib/data-source';
 import { runDecisionEngine, runPortfolio } from '@/lib/engine';
 import DecisionBadge from '@/components/ui/DecisionBadge';
 import PlatformBadge from '@/components/ui/PlatformBadge';
 import { ArrowRight, TrendingUp, TrendingDown, Shuffle } from 'lucide-react';
 
 export default function ReallocationPage() {
-  const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), []);
+  const { ads, benchmarks } = useDataSource();
+  const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), [ads, benchmarks]);
   const portfolio  = useMemo(() => runPortfolio(decisions), [decisions]);
 
   const winners = decisions.filter(d => d.decision === 'SCALE').sort((a,b) => b.ad.performance.roas - a.ad.performance.roas);
@@ -160,8 +161,8 @@ export default function ReallocationPage() {
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     {[
-                      { label: 'ROAS',         value: d.ad.performance.roas.toFixed(1)+'x',  accent: '#34d399' },
-                      { label: 'Add budget',   value: '+€'+Math.round(addedSpend).toLocaleString(), accent: '#34d399' },
+                      { label: 'ROAS',          value: d.ad.performance.roas.toFixed(1)+'x',  accent: '#34d399' },
+                      { label: 'Add budget',    value: '+€'+Math.round(addedSpend).toLocaleString(), accent: '#34d399' },
                       { label: 'Proj. revenue', value: '+€'+Math.round(projRevenue).toLocaleString(), accent: '#34d399', highlight: true },
                     ].map(m => (
                       <div key={m.label} className="rounded-lg p-2.5"

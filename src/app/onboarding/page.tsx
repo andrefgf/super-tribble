@@ -6,7 +6,7 @@ import { ArrowRight, Zap, TrendingUp, TrendingDown, Wrench } from 'lucide-react'
 const DECISIONS = [
   { label: 'SCALE', color: '#10b981', bg: 'rgba(16,185,129,0.1)',  border: 'rgba(16,185,129,0.2)', icon: <TrendingUp  size={14}/>, desc: 'Increase budget on proven winners' },
   { label: 'KILL',  color: '#ef4444', bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.2)',  icon: <TrendingDown size={14}/>, desc: 'Stop wasting money on losers' },
-  { label: 'FIX',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.2)', icon: <Wrench size={14}/>,       desc: 'Diagnose what's broken and why' },
+  { label: 'FIX',   color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.2)', icon: <Wrench size={14}/>,       desc: 'Diagnose what\'s broken and why' },
   { label: 'HOLD',  color: '#6366f1', bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.2)', icon: <Zap size={14}/>,          desc: 'Watch and wait for more signal' },
 ];
 

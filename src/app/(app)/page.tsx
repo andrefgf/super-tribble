@@ -1,245 +1,164 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useDataSource } from '@/lib/data-source';
 import { runDecisionEngine, runPortfolio } from '@/lib/engine';
-import MetricCard from '@/components/ui/MetricCard';
 import DecisionBadge from '@/components/ui/DecisionBadge';
-import PlatformBadge from '@/components/ui/PlatformBadge';
 import ForecastCard from '@/components/ForecastCard';
 import IndustryBenchmarkCard from '@/components/IndustryBenchmarkCard';
 import ShareButton from '@/components/ShareButton';
-import { TrendingUp, DollarSign, Target, Zap, ArrowRight } from 'lucide-react';
+import { ArrowRight, TrendingDown } from 'lucide-react';
 import Link from 'next/link';
-import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
-} from 'recharts';
 
-const DECISION_COLORS = { SCALE: '#10b981', HOLD: '#6366f1', KILL: '#ef4444', FIX: '#f59e0b' };
+const DECISION_COLORS: Record<string, string> = {
+  SCALE: '#34d399', HOLD: '#a5b4fc', KILL: '#f87171', FIX: '#fbbf24',
+};
+const DECISION_BG: Record<string, string> = {
+  SCALE: 'rgba(16,185,129,0.07)', HOLD: 'rgba(99,102,241,0.07)', KILL: 'rgba(239,68,68,0.07)', FIX: 'rgba(245,158,11,0.07)',
+};
 
 export default function DashboardPage() {
   const { ads, benchmarks, source } = useDataSource();
+  const [dateStr, setDateStr] = useState('');
+
+  useEffect(() => {
+    setDateStr(new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }));
+  }, []);
 
   const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), [ads, benchmarks]);
   const portfolio  = useMemo(() => runPortfolio(decisions), [decisions]);
 
-  const pieData = [
-    { name: 'SCALE', value: portfolio.decisions.SCALE },
-    { name: 'HOLD',  value: portfolio.decisions.HOLD  },
-    { name: 'KILL',  value: portfolio.decisions.KILL  },
-    { name: 'FIX',   value: portfolio.decisions.FIX   },
-  ];
-
-  const platformSpend = useMemo(() => {
-    const map: Record<string, { spend: number; revenue: number }> = {};
-    ads.forEach(ad => {
-      if (!map[ad.platform]) map[ad.platform] = { spend: 0, revenue: 0 };
-      map[ad.platform].spend   += ad.performance.spend;
-      map[ad.platform].revenue += ad.performance.revenue;
-    });
-    return Object.entries(map).map(([p, v]) => ({
-      platform: p.charAt(0).toUpperCase() + p.slice(1),
-      Spend:   Math.round(v.spend),
-      Revenue: Math.round(v.revenue),
-    }));
-  }, [ads]);
-
-  const topDecisions = decisions
+  const priorityActions = decisions
     .filter(d => d.priority === 'HIGH')
-    .sort((a, b) => Math.abs(b.score) - Math.abs(a.score))
-    .slice(0, 5);
+    .sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
 
   const wastedPct = ((portfolio.spendOnLosers / portfolio.totalSpend) * 100).toFixed(0);
   const brandName = source === 'csv_upload' ? 'Your account' : 'Lumière';
 
+  const roasLift = ((portfolio.spendOnWinners + portfolio.reallocationAmount) / portfolio.spendOnWinners * portfolio.overallRoas - portfolio.overallRoas).toFixed(1);
+
   return (
-    <div className="p-8 max-w-7xl animate-fade-up">
+    <div className="p-8 max-w-5xl animate-fade-up">
 
-      {/* ── Hero narrative hook ────────────────────────────── */}
-      <div className="mb-6 relative overflow-hidden rounded-2xl p-6"
-        style={{
-          background: 'linear-gradient(135deg, var(--surface-2) 0%, var(--surface-3) 100%)',
-          border: '1px solid var(--border)',
-        }}
-      >
-        {/* Glow orbs */}
-        <div className="pointer-events-none absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl"
-          style={{ background: 'rgba(124,58,237,0.12)' }} />
-        <div className="pointer-events-none absolute -bottom-8 right-32 w-32 h-32 rounded-full blur-2xl"
-          style={{ background: 'rgba(16,185,129,0.08)' }} />
-
-        <div className="relative flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
-                style={{ background: 'rgba(124,58,237,0.15)', color: 'var(--brand-light)', border: '1px solid rgba(124,58,237,0.2)' }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-violet-400"
-                  style={{ animation: 'glow-pulse 2s infinite' }} />
-                Daily Brief · {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-              </span>
-            </div>
-
-            <h1 className="text-xl font-bold mb-1" style={{ color: 'var(--text-1)' }}>
-              {brandName} spent{' '}
-              <span style={{ color: 'var(--text-1)' }}>€{(portfolio.totalSpend / 1000).toFixed(1)}k</span> this week.
-            </h1>
-            <p className="text-sm" style={{ color: 'var(--text-2)' }}>
-              <span style={{ color: '#f87171', fontWeight: 600 }}>{wastedPct}% is going to underperformers</span> that should be killed or fixed today.
-              Shift that budget to your {portfolio.decisions.SCALE} winners and your ROAS could jump by
-              <span style={{ color: '#34d399', fontWeight: 600 }}>
-                {' '}~{((portfolio.spendOnWinners + portfolio.reallocationAmount) / portfolio.spendOnWinners * portfolio.overallRoas - portfolio.overallRoas).toFixed(1)}x
-              </span>.
-            </p>
-          </div>
-
-          <ShareButton ads={ads} benchmarks={benchmarks} />
+      {/* ── Daily Brief header ─────────────────────────────── */}
+      <div className="flex items-start justify-between mb-10">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-2"
+            style={{ color: 'var(--text-3)', letterSpacing: '0.1em' }}>
+            {dateStr ? `Daily Brief · ${dateStr}` : 'Daily Brief'}
+          </p>
+          <h1 className="text-3xl font-bold leading-tight mb-3" style={{ color: 'var(--text-1)' }}>
+            {brandName} spent{' '}
+            <span style={{ color: 'var(--text-1)' }}>€{(portfolio.totalSpend / 1000).toFixed(1)}k</span> this week.
+          </h1>
+          <p className="text-base leading-relaxed max-w-xl" style={{ color: 'var(--text-2)' }}>
+            <span style={{ color: '#f87171', fontWeight: 600 }}>{wastedPct}% is going to underperformers.</span>{' '}
+            Shift that budget to your {portfolio.decisions.SCALE} winners and ROAS could jump by{' '}
+            <span style={{ color: '#34d399', fontWeight: 600 }}>~{roasLift}x</span>.
+          </p>
         </div>
+        <ShareButton ads={ads} benchmarks={benchmarks} />
       </div>
 
-      {/* ── KPIs ──────────────────────────────────────────── */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        <MetricCard label="Total Spend (7d)"    value={`€${(portfolio.totalSpend/1000).toFixed(1)}k`}
-          sub="across all platforms"   icon={<DollarSign size={14}/>} accent="#6366f1" />
-        <MetricCard label="Portfolio ROAS"      value={portfolio.overallRoas.toFixed(2)+'x'}
-          trend={12} sub="vs. last 7 days"      icon={<TrendingUp size={14}/>} accent="#10b981" highlight />
-        <MetricCard label="Wasted Spend"        value={`€${portfolio.spendOnLosers.toLocaleString()}`}
-          sub="on KILL candidates"              icon={<Target size={14}/>}   accent="#ef4444" />
-        <MetricCard label="Reallocation Opp."   value={`€${portfolio.reallocationAmount.toLocaleString()}`}
-          sub="ready to shift to winners"       icon={<Zap size={14}/>}     accent="#f59e0b" highlight />
-      </div>
-
-      {/* ── Forecast ROI Card ─────────────────────────────── */}
-      <ForecastCard decisions={decisions} benchmarks={benchmarks} daysOfData={7} />
-
-      {/* ── Charts ────────────────────────────────────────── */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-
-        {/* Decision breakdown donut */}
-        <div className="card-glow rounded-xl p-5"
-          style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
-          <h3 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-1)' }}>Decision Breakdown</h3>
-          <p className="text-xs mb-4" style={{ color: 'var(--text-3)' }}>{decisions.length} ads analysed</p>
-          <ResponsiveContainer width="100%" height={150}>
-            <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={42} outerRadius={65}
-                paddingAngle={3} dataKey="value" strokeWidth={0}>
-                {pieData.map(entry => (
-                  <Cell key={entry.name}
-                    fill={DECISION_COLORS[entry.name as keyof typeof DECISION_COLORS]} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  background: 'var(--surface-2)', border: '1px solid var(--border)',
-                  borderRadius: 8, fontSize: 12, color: 'var(--text-1)',
-                }}
-                formatter={(v: unknown) => [String(v) + ' ads']}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="grid grid-cols-2 gap-1.5 mt-2">
-            {pieData.map(d => (
-              <div key={d.name} className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: DECISION_COLORS[d.name as keyof typeof DECISION_COLORS] }} />
-                <span className="text-xs" style={{ color: 'var(--text-3)' }}>
-                  {d.name} <strong style={{ color: 'var(--text-1)' }}>{d.value}</strong>
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Platform bar chart */}
-        <div className="col-span-2 card-glow rounded-xl p-5"
-          style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
-          <h3 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-1)' }}>Spend vs Revenue by Platform</h3>
-          <p className="text-xs mb-4" style={{ color: 'var(--text-3)' }}>7-day window</p>
-          <ResponsiveContainer width="100%" height={170}>
-            <BarChart data={platformSpend} barCategoryGap="35%">
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
-              <XAxis dataKey="platform"
-                tick={{ fill: 'var(--text-3)', fontSize: 12 }} axisLine={false} tickLine={false} />
-              <YAxis
-                tick={{ fill: 'var(--text-3)', fontSize: 11 }} axisLine={false} tickLine={false}
-                tickFormatter={v => `€${(v/1000).toFixed(0)}k`} />
-              <Tooltip
-                cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-                contentStyle={{
-                  background: 'var(--surface-2)', border: '1px solid var(--border)',
-                  borderRadius: 8, fontSize: 12, color: 'var(--text-1)',
-                }}
-                formatter={(v: unknown) => [`€${Number(v).toLocaleString()}`]}
-              />
-              <Legend wrapperStyle={{ fontSize: 12, color: 'var(--text-3)' }} />
-              <Bar dataKey="Spend"   fill="#6366f1" radius={[4,4,0,0]} />
-              <Bar dataKey="Revenue" fill="#10b981" radius={[4,4,0,0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* ── Top Priority Actions ───────────────────────────── */}
-      <div className="card-glow rounded-xl overflow-hidden mb-8"
+      {/* ── Priority Actions — full width hero ────────────── */}
+      <div className="mb-8 rounded-2xl overflow-hidden"
         style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
-        <div className="flex items-center justify-between px-5 py-4"
+
+        <div className="flex items-center justify-between px-6 py-5"
           style={{ borderBottom: '1px solid var(--border)' }}>
           <div>
-            <h3 className="text-sm font-semibold" style={{ color: 'var(--text-1)' }}>Top Priority Actions</h3>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>
-              High-confidence decisions requiring your attention
+            <h2 className="text-base font-bold" style={{ color: 'var(--text-1)' }}>Priority Actions</h2>
+            <p className="text-sm mt-0.5" style={{ color: 'var(--text-3)' }}>
+              {priorityActions.length} high-confidence decisions need your attention today
             </p>
           </div>
           <Link href="/decisions"
-            className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-all hover:bg-violet-500/10"
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all hover:bg-violet-500/10"
             style={{ color: 'var(--brand-light)', border: '1px solid rgba(124,58,237,0.2)' }}>
-            View all <ArrowRight size={12} />
+            All {decisions.length} ads <ArrowRight size={12} />
           </Link>
         </div>
 
-        <div>
-          {topDecisions.map((d, i) => (
-            <div key={d.ad.id}
-              className="flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-white/[0.015]"
-              style={{ borderBottom: i < topDecisions.length - 1 ? '1px solid var(--border)' : 'none' }}>
-              <span className="text-xs w-4 text-center font-mono" style={{ color: 'var(--text-3)' }}>
-                {i + 1}
-              </span>
+        {priorityActions.map((d, i) => (
+          <div key={d.ad.id}
+            className="group flex items-center gap-5 px-6 py-5 transition-colors hover:bg-white/[0.018] cursor-pointer"
+            style={{ borderBottom: i < priorityActions.length - 1 ? '1px solid var(--border)' : 'none' }}>
+
+            {/* Decision pill */}
+            <div className="flex-shrink-0">
               <DecisionBadge decision={d.decision} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate" style={{ color: 'var(--text-1)' }}>
-                  {d.ad.name}
-                </p>
-                <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-3)' }}>
-                  {d.reasons[0]}
-                </p>
-              </div>
-              <PlatformBadge platform={d.ad.platform} />
-              <div className="text-right w-24">
-                <p className="text-sm font-semibold tabular-nums" style={{ color: 'var(--text-1)' }}>
-                  €{d.ad.performance.spend.toLocaleString()}
-                </p>
-                <p className="text-xs" style={{ color: 'var(--text-3)' }}>spend</p>
-              </div>
-              <div className="text-right w-20">
-                <p className="text-sm font-bold tabular-nums"
-                  style={{
-                    color: d.decision === 'SCALE' ? '#34d399'
-                         : d.decision === 'KILL'  ? '#f87171'
-                         : '#fbbf24',
-                  }}>
-                  {d.budgetSuggestion}
-                </p>
-                <p className="text-xs" style={{ color: 'var(--text-3)' }}>action</p>
-              </div>
             </div>
-          ))}
-        </div>
+
+            {/* Ad info */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold mb-1 truncate" style={{ color: 'var(--text-1)' }}>
+                {d.ad.name}
+              </p>
+              <p className="text-xs truncate" style={{ color: 'var(--text-3)' }}>
+                {d.reasons[0]}
+              </p>
+            </div>
+
+            {/* ROAS */}
+            <div className="text-right flex-shrink-0 w-20">
+              <p className="text-xs mb-1" style={{ color: 'var(--text-3)' }}>ROAS</p>
+              <p className="text-sm font-bold tabular-nums"
+                style={{ color: d.ad.performance.roas >= benchmarks.medianRoas ? '#34d399' : '#f87171' }}>
+                {d.ad.performance.roas.toFixed(1)}x
+              </p>
+            </div>
+
+            {/* Spend */}
+            <div className="text-right flex-shrink-0 w-20">
+              <p className="text-xs mb-1" style={{ color: 'var(--text-3)' }}>Spend</p>
+              <p className="text-sm font-semibold tabular-nums" style={{ color: 'var(--text-1)' }}>
+                €{d.ad.performance.spend.toLocaleString()}
+              </p>
+            </div>
+
+            {/* Action */}
+            <div className="text-right flex-shrink-0 w-28">
+              <p className="text-xs mb-1" style={{ color: 'var(--text-3)' }}>Action</p>
+              <p className="text-sm font-bold tabular-nums"
+                style={{ color: DECISION_COLORS[d.decision] }}>
+                {d.budgetSuggestion}
+              </p>
+            </div>
+          </div>
+        ))}
+
+        {priorityActions.length === 0 && (
+          <div className="px-6 py-12 text-center">
+            <p className="text-sm" style={{ color: 'var(--text-3)' }}>No high-priority actions — portfolio looks healthy.</p>
+          </div>
+        )}
       </div>
 
-      {/* ── Industry Benchmark ────────────────────────────── */}
-      <IndustryBenchmarkCard accountBenchmarks={benchmarks} />
+      {/* ── Wasted spend callout ───────────────────────────── */}
+      {portfolio.spendOnLosers > 0 && (
+        <div className="flex items-start gap-4 px-6 py-5 rounded-2xl mb-8"
+          style={{ background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.15)' }}>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+            style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>
+            <TrendingDown size={16} style={{ color: '#f87171' }} />
+          </div>
+          <div>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#fca5a5' }}>
+              €{portfolio.spendOnLosers.toLocaleString()} in wasted spend identified
+            </p>
+            <p className="text-xs leading-relaxed" style={{ color: 'rgba(252,165,165,0.7)' }}>
+              {portfolio.decisions.KILL} ads are burning budget below break-even. Reallocating this to your top performers
+              could generate an additional €{portfolio.reallocationAmount.toLocaleString()} in revenue this week.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Forecast + Benchmarks ─────────────────────────── */}
+      <div className="space-y-4">
+        <ForecastCard decisions={decisions} benchmarks={benchmarks} daysOfData={7} />
+        <IndustryBenchmarkCard accountBenchmarks={benchmarks} />
+      </div>
 
     </div>
   );

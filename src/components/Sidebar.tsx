@@ -100,7 +100,6 @@ export default function Sidebar() {
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold truncate" style={{ color: 'var(--text-1)' }}>André F.</p>
-            <p className="text-xs truncate" style={{ color: 'var(--text-3)' }}>DTC Plan — €149/mo</p>
           </div>
         </div>
       </div>

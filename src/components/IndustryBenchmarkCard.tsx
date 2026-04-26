@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { AccountBenchmarks } from '@/lib/types';
-import { INDUSTRY_BENCHMARKS, getPercentile, type IndustryVertical } from '@/lib/benchmarks-industry';
+import { INDUSTRY_BENCHMARKS, getPercentile, type IndustryVertical, type IndustryBenchmark } from '@/lib/benchmarks-industry';
 
 const VERTICAL_KEY = 'lumiere_vertical';
 

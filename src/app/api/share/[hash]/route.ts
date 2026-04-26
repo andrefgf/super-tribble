@@ -3,9 +3,9 @@ import { createServiceClient } from '@/lib/supabase';
 
 export async function GET(
   _request: Request,
-  { params }: { params: { hash: string } },
+  { params }: { params: Promise<{ hash: string }> },
 ) {
-  const { hash } = params;
+  const { hash } = await params;
 
   if (!hash) {
     return NextResponse.json({ error: 'Missing hash' }, { status: 400 });

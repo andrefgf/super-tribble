@@ -1,11 +1,15 @@
 'use client';
 
 import { useMemo } from 'react';
-import { ads, benchmarks, BRAND_NAME } from '@/lib/seed';
+import { useDataSource } from '@/lib/data-source';
 import { runDecisionEngine, runPortfolio } from '@/lib/engine';
 import MetricCard from '@/components/ui/MetricCard';
 import DecisionBadge from '@/components/ui/DecisionBadge';
 import PlatformBadge from '@/components/ui/PlatformBadge';
+import ForecastCard from '@/components/ForecastCard';
+import IndustryBenchmarkCard from '@/components/IndustryBenchmarkCard';
+import SlackAlertSection from '@/components/SlackAlertSection';
+import ShareButton from '@/components/ShareButton';
 import { TrendingUp, DollarSign, Target, Zap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import {
@@ -16,7 +20,9 @@ import {
 const DECISION_COLORS = { SCALE: '#10b981', HOLD: '#6366f1', KILL: '#ef4444', FIX: '#f59e0b' };
 
 export default function DashboardPage() {
-  const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), []);
+  const { ads, benchmarks, source } = useDataSource();
+
+  const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), [ads, benchmarks]);
   const portfolio  = useMemo(() => runPortfolio(decisions), [decisions]);
 
   const pieData = [
@@ -38,7 +44,7 @@ export default function DashboardPage() {
       Spend:   Math.round(v.spend),
       Revenue: Math.round(v.revenue),
     }));
-  }, []);
+  }, [ads]);
 
   const topDecisions = decisions
     .filter(d => d.priority === 'HIGH')
@@ -46,12 +52,13 @@ export default function DashboardPage() {
     .slice(0, 5);
 
   const wastedPct = ((portfolio.spendOnLosers / portfolio.totalSpend) * 100).toFixed(0);
+  const brandName = source === 'csv_upload' ? 'Your account' : 'Lumière';
 
   return (
     <div className="p-8 max-w-7xl animate-fade-up">
 
       {/* ── Hero narrative hook ────────────────────────────── */}
-      <div className="mb-8 relative overflow-hidden rounded-2xl p-6"
+      <div className="mb-6 relative overflow-hidden rounded-2xl p-6"
         style={{
           background: 'linear-gradient(135deg, var(--surface-2) 0%, var(--surface-3) 100%)',
           border: '1px solid var(--border)',
@@ -63,24 +70,31 @@ export default function DashboardPage() {
         <div className="pointer-events-none absolute -bottom-8 right-32 w-32 h-32 rounded-full blur-2xl"
           style={{ background: 'rgba(16,185,129,0.08)' }} />
 
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
-              style={{ background: 'rgba(124,58,237,0.15)', color: 'var(--brand-light)', border: '1px solid rgba(124,58,237,0.2)' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-400"
-                style={{ animation: 'glow-pulse 2s infinite' }} />
-              Daily Brief · Apr 20, 2026
-            </span>
+        <div className="relative flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+                style={{ background: 'rgba(124,58,237,0.15)', color: 'var(--brand-light)', border: '1px solid rgba(124,58,237,0.2)' }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-violet-400"
+                  style={{ animation: 'glow-pulse 2s infinite' }} />
+                Daily Brief · {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+            </div>
+
+            <h1 className="text-xl font-bold mb-1" style={{ color: 'var(--text-1)' }}>
+              {brandName} spent{' '}
+              <span style={{ color: 'var(--text-1)' }}>€{(portfolio.totalSpend / 1000).toFixed(1)}k</span> this week.
+            </h1>
+            <p className="text-sm" style={{ color: 'var(--text-2)' }}>
+              <span style={{ color: '#f87171', fontWeight: 600 }}>{wastedPct}% is going to underperformers</span> that should be killed or fixed today.
+              Shift that budget to your {portfolio.decisions.SCALE} winners and your ROAS could jump by
+              <span style={{ color: '#34d399', fontWeight: 600 }}>
+                {' '}~{((portfolio.spendOnWinners + portfolio.reallocationAmount) / portfolio.spendOnWinners * portfolio.overallRoas - portfolio.overallRoas).toFixed(1)}x
+              </span>.
+            </p>
           </div>
 
-          <h1 className="text-xl font-bold mb-1" style={{ color: 'var(--text-1)' }}>
-            {BRAND_NAME} spent <span style={{ color: 'var(--text-1)' }}>€{(portfolio.totalSpend / 1000).toFixed(1)}k</span> this week.
-          </h1>
-          <p className="text-sm" style={{ color: 'var(--text-2)' }}>
-            <span style={{ color: '#f87171', fontWeight: 600 }}>{wastedPct}% is going to underperformers</span> that should be killed or fixed today.
-            Shift that budget to your {portfolio.decisions.SCALE} winners and your ROAS could jump by
-            <span style={{ color: '#34d399', fontWeight: 600 }}> ~{((portfolio.spendOnWinners + portfolio.reallocationAmount) / portfolio.spendOnWinners * portfolio.overallRoas - portfolio.overallRoas).toFixed(1)}x</span>.
-          </p>
+          <ShareButton ads={ads} benchmarks={benchmarks} />
         </div>
       </div>
 
@@ -95,6 +109,9 @@ export default function DashboardPage() {
         <MetricCard label="Reallocation Opp."   value={`€${portfolio.reallocationAmount.toLocaleString()}`}
           sub="ready to shift to winners"       icon={<Zap size={14}/>}     accent="#f59e0b" highlight />
       </div>
+
+      {/* ── Forecast ROI Card ─────────────────────────────── */}
+      <ForecastCard decisions={decisions} benchmarks={benchmarks} daysOfData={7} />
 
       {/* ── Charts ────────────────────────────────────────── */}
       <div className="grid grid-cols-3 gap-4 mb-8">
@@ -165,7 +182,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Top Priority Actions ───────────────────────────── */}
-      <div className="card-glow rounded-xl overflow-hidden"
+      <div className="card-glow rounded-xl overflow-hidden mb-8"
         style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
         <div className="flex items-center justify-between px-5 py-4"
           style={{ borderBottom: '1px solid var(--border)' }}>
@@ -221,6 +238,13 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
+
+      {/* ── Industry Benchmark ────────────────────────────── */}
+      <IndustryBenchmarkCard accountBenchmarks={benchmarks} />
+
+      {/* ── Slack Alert Section ───────────────────────────── */}
+      <SlackAlertSection decisions={decisions} />
+
     </div>
   );
 }

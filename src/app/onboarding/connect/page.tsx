@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Upload, Link2, ArrowRight, AlertCircle, CheckCircle, FileText } from 'lucide-react';
-import DecisionBadge from '@/components/ui/DecisionBadge';
-import { Decision } from '@/lib/types';
+import { persistUpload } from '@/lib/data-source';
+import type { Ad, AccountBenchmarks } from '@/lib/types';
 
 // Placeholder account ID — in production this comes from auth
 const DEMO_ACCOUNT_ID = 'demo-account-123';
@@ -22,10 +22,10 @@ function ConnectPageInner() {
   const searchParams = useSearchParams();
   const oauthError   = searchParams.get('error');
 
-  const [tab, setTab]             = useState<'meta' | 'csv'>('meta');
-  const [csvResults, setCsvResults] = useState<null | { decisions: unknown[]; portfolio: unknown; adsFound: number }>(null);
+  const router = useRouter();
+  const [tab, setTab]         = useState<'meta' | 'csv'>('meta');
   const [csvLoading, setCsvLoading] = useState(false);
-  const [csvError, setCsvError]   = useState<string | null>(null);
+  const [csvError, setCsvError]     = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleCsvUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -45,7 +45,9 @@ function ConnectPageInner() {
       if (!res.ok) {
         setCsvError(data.error ?? 'Upload failed');
       } else {
-        setCsvResults(data);
+        // Persist to sessionStorage, then show the reveal screen
+        persistUpload(data.ads as Ad[], data.benchmarks as AccountBenchmarks);
+        router.push('/reveal');
       }
     } catch {
       setCsvError('Upload failed — check your internet connection');
@@ -166,38 +168,31 @@ function ConnectPageInner() {
         {/* CSV TAB */}
         {tab === 'csv' && (
           <div className="rounded-2xl p-6" style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
+            <p className="text-sm mb-2" style={{ color: 'var(--text-1)' }}>
+              Export your data from Meta Ads Manager and upload it here.
+            </p>
+            <p className="text-xs mb-5 leading-relaxed" style={{ color: 'var(--text-3)' }}>
+              In Meta Ads Manager → Ads view → Columns: Performance &amp; Clicks →
+              Export → CSV. We&apos;ll run your ads through the decision engine instantly.
+            </p>
 
-            {!csvResults ? (
-              <>
-                <p className="text-sm mb-2" style={{ color: 'var(--text-1)' }}>
-                  Export your data from Meta Ads Manager and upload it here.
-                </p>
-                <p className="text-xs mb-5 leading-relaxed" style={{ color: 'var(--text-3)' }}>
-                  In Meta Ads Manager → Ads view → Columns: Performance & Clicks →
-                  Export → CSV. We'll run your ads through the decision engine instantly.
-                </p>
+            <input ref={fileRef} type="file" accept=".csv" className="hidden"
+              onChange={handleCsvUpload} />
 
-                <input ref={fileRef} type="file" accept=".csv" className="hidden"
-                  onChange={handleCsvUpload} />
+            <button onClick={() => fileRef.current?.click()} disabled={csvLoading}
+              className="w-full flex flex-col items-center gap-3 py-8 rounded-xl border-2 border-dashed transition-all hover:border-violet-500/50 hover:bg-violet-500/5"
+              style={{ borderColor: 'var(--border)', color: 'var(--text-3)' }}>
+              <Upload size={24} />
+              <span className="text-sm font-medium">
+                {csvLoading ? 'Analysing your ads…' : 'Click to upload CSV'}
+              </span>
+              <span className="text-xs">Meta Ads Manager export · max 10MB</span>
+            </button>
 
-                <button onClick={() => fileRef.current?.click()} disabled={csvLoading}
-                  className="w-full flex flex-col items-center gap-3 py-8 rounded-xl border-2 border-dashed transition-all hover:border-violet-500/50 hover:bg-violet-500/5"
-                  style={{ borderColor: 'var(--border)', color: 'var(--text-3)' }}>
-                  <Upload size={24} />
-                  <span className="text-sm font-medium">
-                    {csvLoading ? 'Analysing your ads...' : 'Click to upload CSV'}
-                  </span>
-                  <span className="text-xs">Meta Ads Manager export · max 10MB</span>
-                </button>
-
-                {csvError && (
-                  <p className="mt-3 text-xs text-center" style={{ color: '#f87171' }}>
-                    {csvError}
-                  </p>
-                )}
-              </>
-            ) : (
-              <CsvResults data={csvResults} onReset={() => setCsvResults(null)} />
+            {csvError && (
+              <p className="mt-3 text-xs text-center" style={{ color: '#f87171' }}>
+                {csvError}
+              </p>
             )}
           </div>
         )}
@@ -206,76 +201,6 @@ function ConnectPageInner() {
   );
 }
 
-function CsvResults({ data, onReset }: {
-  data: { decisions: unknown[]; portfolio: unknown; adsFound: number };
-  onReset: () => void;
-}) {
-  const decisions = data.decisions as Array<{
-    decision: Decision;
-    ad: { name: string; performance: { spend: number; roas: number } };
-    budgetSuggestion: string;
-    reasons: string[];
-  }>;
-
-  const portfolio = data.portfolio as {
-    totalSpend: number;
-    overallRoas: number;
-    spendOnLosers: number;
-    reallocationAmount: number;
-    decisions: Record<string, number>;
-  };
-
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-5">
-        <div>
-          <p className="text-sm font-bold" style={{ color: 'var(--text-1)' }}>
-            Analysis complete — {data.adsFound} ads found
-          </p>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>
-            ROAS {portfolio.overallRoas.toFixed(2)}x · €{portfolio.spendOnLosers.toLocaleString()} wasted spend detected
-          </p>
-        </div>
-        <button onClick={onReset} className="text-xs" style={{ color: 'var(--text-3)' }}>
-          ← New import
-        </button>
-      </div>
-
-      <div className="grid grid-cols-4 gap-2 mb-5">
-        {(['SCALE','HOLD','KILL','FIX'] as Decision[]).map(d => (
-          <div key={d} className="rounded-lg p-3 text-center"
-            style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-            <DecisionBadge decision={d} size="sm" />
-            <p className="text-lg font-bold mt-1" style={{ color: 'var(--text-1)' }}>
-              {portfolio.decisions[d] ?? 0}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      <div className="space-y-2 max-h-64 overflow-y-auto">
-        {decisions.map((d, i) => (
-          <div key={i} className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
-            style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-            <DecisionBadge decision={d.decision} />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium truncate" style={{ color: 'var(--text-1)' }}>{d.ad.name}</p>
-              <p className="text-xs truncate" style={{ color: 'var(--text-3)' }}>{d.reasons[0]}</p>
-            </div>
-            <span className="text-xs font-bold tabular-nums" style={{ color: 'var(--text-3)' }}>
-              €{d.ad.performance.spend.toLocaleString()}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <a href="/" className="mt-5 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold"
-        style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}>
-        View full dashboard <ArrowRight size={14} />
-      </a>
-    </div>
-  );
-}
 
 export default function ConnectPage() {
   return (

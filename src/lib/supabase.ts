@@ -1,15 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-export const supabase = createClient(supabaseUrl, supabaseAnon);
-
-// Server-side client (for API routes that need service role)
+/**
+ * Server-side Supabase client using the service role key.
+ * Call inside an API route or server action — never at module level.
+ */
 export function createServiceClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
+    { auth: { persistSession: false } },
+  );
+}
+
+/**
+ * Public (anon-key) Supabase client for client components.
+ * Returns a new instance each call — memoise in a hook if needed.
+ */
+export function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );
 }

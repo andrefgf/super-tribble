@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//mnt/c/Users/**)",
+      "Read(//c/Users/Andre/**)",
+      "Bash(rm ~/super-tribble/src/app/page.tsx)",
+      "Bash(rm -rf ~/super-tribble/src/app/decisions ~/super-tribble/src/app/creatives ~/super-tribble/src/app/reallocation)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(cmd.exe /c \"cd C:\\\\Users\\\\Andre\\\\super-tribble && npm run build 2>&1\")"
+    ]
+  }
+}

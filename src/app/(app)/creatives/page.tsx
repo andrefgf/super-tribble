@@ -1,14 +1,15 @@
 'use client';
 
 import { useMemo } from 'react';
-import { ads, benchmarks } from '@/lib/seed';
+import { useDataSource } from '@/lib/data-source';
 import { runDecisionEngine } from '@/lib/engine';
 import PlatformBadge from '@/components/ui/PlatformBadge';
 import DecisionBadge from '@/components/ui/DecisionBadge';
 import { AlertTriangle, Clock, CheckCircle, Video, Image, LayoutGrid } from 'lucide-react';
 
 export default function CreativesPage() {
-  const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), []);
+  const { ads, benchmarks } = useDataSource();
+  const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), [ads, benchmarks]);
 
   const creatives = useMemo(() => {
     const map = new Map<string, typeof decisions>();
@@ -19,16 +20,16 @@ export default function CreativesPage() {
     });
 
     return Array.from(map.entries()).map(([, decs]) => {
-      const avgRoas  = decs.reduce((s, d) => s + d.ad.performance.roas, 0) / decs.length;
+      const avgRoas    = decs.reduce((s, d) => s + d.ad.performance.roas, 0) / decs.length;
       const totalSpend = decs.reduce((s, d) => s + d.ad.performance.spend, 0);
       const totalImpr  = decs.reduce((s, d) => s + d.ad.performance.impressions, 0);
-      const avgFreq  = decs.reduce((s, d) => s + d.ad.performance.frequency, 0) / decs.length;
-      const avgCtr   = decs.reduce((s, d) => s + d.ad.performance.ctr, 0) / decs.length;
-      const sorted   = [...decs].sort((a, b) => ['SCALE','KILL','FIX','HOLD'].indexOf(a.decision) - ['SCALE','KILL','FIX','HOLD'].indexOf(b.decision));
+      const avgFreq    = decs.reduce((s, d) => s + d.ad.performance.frequency, 0) / decs.length;
+      const avgCtr     = decs.reduce((s, d) => s + d.ad.performance.ctr, 0) / decs.length;
+      const sorted     = [...decs].sort((a, b) => ['SCALE','KILL','FIX','HOLD'].indexOf(a.decision) - ['SCALE','KILL','FIX','HOLD'].indexOf(b.decision));
       const topDecision = sorted[0].decision;
-      const winRate  = decs.filter(d => d.decision === 'SCALE').length / decs.length;
+      const winRate    = decs.filter(d => d.decision === 'SCALE').length / decs.length;
       const fatigueScore = avgFreq > 5 ? 'HIGH' : avgFreq > 3 ? 'MEDIUM' : 'LOW';
-      const ctrTrend = decs[0].ad.performance.ctr / decs[0].ad.performance.prev_ctr - 1;
+      const ctrTrend   = decs[0].ad.performance.ctr / decs[0].ad.performance.prev_ctr - 1;
       return {
         id: decs[0].ad.creative.id,
         name: decs[0].ad.creative.name,

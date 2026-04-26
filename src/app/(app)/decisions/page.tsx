@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ads, benchmarks } from '@/lib/seed';
+import { useDataSource } from '@/lib/data-source';
 import { runDecisionEngine } from '@/lib/engine';
 import { Decision } from '@/lib/types';
 import DecisionBadge from '@/components/ui/DecisionBadge';
@@ -11,7 +11,8 @@ import { ChevronDown, ChevronUp, SlidersHorizontal } from 'lucide-react';
 type SortKey = 'score' | 'spend' | 'roas' | 'decision';
 
 export default function DecisionsPage() {
-  const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), []);
+  const { ads, benchmarks } = useDataSource();
+  const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), [ads, benchmarks]);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [filter, setFilter]     = useState<Decision | 'ALL'>('ALL');
   const [sortKey, setSortKey]   = useState<SortKey>('score');
@@ -24,7 +25,7 @@ export default function DecisionsPage() {
   }, [decisions]);
 
   const filtered = useMemo(() => {
-    let list = filter === 'ALL' ? decisions : decisions.filter(d => d.decision === filter);
+    const list = filter === 'ALL' ? decisions : decisions.filter(d => d.decision === filter);
     return [...list].sort((a, b) => {
       let av = 0, bv = 0;
       if (sortKey === 'score')    { av = a.score; bv = b.score; }

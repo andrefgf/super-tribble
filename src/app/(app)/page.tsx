@@ -8,7 +8,6 @@ import DecisionBadge from '@/components/ui/DecisionBadge';
 import PlatformBadge from '@/components/ui/PlatformBadge';
 import ForecastCard from '@/components/ForecastCard';
 import IndustryBenchmarkCard from '@/components/IndustryBenchmarkCard';
-import SlackAlertSection from '@/components/SlackAlertSection';
 import ShareButton from '@/components/ShareButton';
 import { TrendingUp, DollarSign, Target, Zap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -241,9 +240,6 @@ export default function DashboardPage() {
 
       {/* ── Industry Benchmark ────────────────────────────── */}
       <IndustryBenchmarkCard accountBenchmarks={benchmarks} />
-
-      {/* ── Slack Alert Section ───────────────────────────── */}
-      <SlackAlertSection decisions={decisions} />
 
     </div>
   );

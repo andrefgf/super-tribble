@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 // Step 2: Meta redirects here after user approves
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

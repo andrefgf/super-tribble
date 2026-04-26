@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { ingestMetaAccount } from '@/lib/meta-ingestion';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   const { account_id, meta_account_id } = await request.json();
 

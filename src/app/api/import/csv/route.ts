@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { runDecisionEngine, runPortfolio } from '@/lib/engine';
 import { Ad, AdPerformance, Platform, AccountBenchmarks } from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
+
 /** Derive account-level benchmarks (medians) from the uploaded ad set */
 function computeBenchmarks(ads: Ad[]): AccountBenchmarks {
   if (ads.length === 0) {

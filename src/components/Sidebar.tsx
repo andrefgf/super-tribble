@@ -2,14 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Zap, Palette, ArrowLeftRight } from 'lucide-react';
+import { LayoutDashboard, Zap, Palette } from 'lucide-react';
 import { BRAND_NAME } from '@/lib/seed';
 
 const nav = [
-  { href: '/',             label: 'Dashboard',    icon: LayoutDashboard, desc: 'Portfolio overview' },
-  { href: '/decisions',    label: 'Decisions',    icon: Zap,             desc: 'Scale · Kill · Hold · Fix' },
-  { href: '/creatives',    label: 'Creatives',    icon: Palette,         desc: 'Creative intelligence' },
-  { href: '/reallocation', label: 'Reallocation', icon: ArrowLeftRight,  desc: 'Budget optimisation' },
+  { href: '/',          label: 'Dashboard', icon: LayoutDashboard, desc: 'Portfolio overview' },
+  { href: '/decisions', label: 'Decisions', icon: Zap,             desc: 'Scale · Kill · Hold · Fix' },
+  { href: '/creatives', label: 'Creatives', icon: Palette,         desc: 'Creative intelligence' },
 ];
 
 export default function Sidebar() {
@@ -84,17 +83,9 @@ export default function Sidebar() {
       {/* ── Platform status ──────────────── */}
       <div className="px-4 py-3 mx-3 mb-3 rounded-lg" style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
         <p className="text-xs font-medium mb-2" style={{ color: 'var(--text-3)' }}>Connected Platforms</p>
-        <div className="space-y-1.5">
-          {[
-            { name: 'Meta Ads',   color: '#60a5fa', dot: '#3b82f6' },
-            { name: 'Google Ads', color: '#4ade80', dot: '#22c55e' },
-            { name: 'TikTok Ads', color: '#f472b6', dot: '#ec4899' },
-          ].map(p => (
-            <div key={p.name} className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: p.dot }} />
-              <span className="text-xs" style={{ color: p.color }}>{p.name}</span>
-            </div>
-          ))}
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#3b82f6' }} />
+          <span className="text-xs" style={{ color: '#60a5fa' }}>Meta Ads</span>
         </div>
       </div>
 

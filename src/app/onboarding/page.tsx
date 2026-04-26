@@ -187,223 +187,171 @@ export default function LandingPage() {
                   </span>
                 ))}
               </div>
+              <Link
+                href="/"
+                style={{ fontSize: 13, color: L.text3, textDecoration: 'none', marginTop: 4 }}
+              >
+                Or explore demo data →
+              </Link>
             </div>
           </div>
 
           {/* Right: app mockup */}
           <div style={{ position: 'relative' }}>
-            <div style={{
-              position: 'absolute', inset: -16,
-              background: 'linear-gradient(135deg, rgba(217,119,6,0.06), rgba(5,150,105,0.04))',
-              borderRadius: 28, zIndex: 0,
-            }} />
-
-            <div style={{
-              position: 'relative', zIndex: 1,
-              background: 'white', borderRadius: 16,
-              boxShadow: '0 24px 64px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.06)',
-              border: `1px solid ${L.border}`,
-              overflow: 'hidden',
-            }}>
-              {/* Browser chrome */}
-              <div style={{ padding: '12px 14px', borderBottom: `1px solid ${L.border}`, display: 'flex', alignItems: 'center', gap: 10, background: '#FAFAF8' }}>
-                <div style={{ display: 'flex', gap: 5 }}>
-                  {['#FCA5A5', '#FDE68A', '#86EFAC'].map(c => (
-                    <span key={c} style={{ width: 9, height: 9, borderRadius: '50%', background: c, display: 'block' }} />
-                  ))}
-                </div>
-                <div style={{ flex: 1, height: 24, background: L.border, borderRadius: 4, display: 'flex', alignItems: 'center', padding: '0 10px' }}>
-                  <span style={{ fontSize: 10, color: L.text3, fontFamily: 'monospace' }}>app.lumiere.ai/dashboard</span>
+            <div
+              style={{
+                background: L.surface,
+                border: `1px solid ${L.border}`,
+                borderRadius: 16,
+                padding: 24,
+                boxShadow: '0 20px 60px rgba(26,25,23,0.1)',
+              }}
+            >
+              <div style={{ background: L.surfaceSubtle, borderRadius: 8, height: 340, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: 48, marginBottom: 12 }}>📊</div>
+                  <p style={{ fontSize: 13, color: L.text3 }}>App preview</p>
                 </div>
               </div>
-
-              {/* Daily brief header */}
-              <div style={{ padding: '10px 16px', borderBottom: `1px solid ${L.border}`, display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(124,58,237,0.03)' }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7c3aed', display: 'block', animation: 'glow-pulse 2s infinite' }} />
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#7c3aed' }}>Daily Brief · 15 ads analysed · Meta</span>
-              </div>
-
-              {/* Decision rows */}
-              {MOCK_DECISIONS.map((d, i) => (
-                <div
-                  key={d.decision}
-                  style={{
-                    padding: '11px 16px',
-                    borderBottom: i < MOCK_DECISIONS.length - 1 ? `1px solid ${L.border}` : 'none',
-                    display: 'flex', alignItems: 'center', gap: 12,
-                  }}
-                >
-                  <span style={{
-                    fontSize: 9, fontWeight: 800, letterSpacing: '0.06em',
-                    color: d.color, background: d.bg,
-                    padding: '3px 8px', borderRadius: 4,
-                    minWidth: 44, textAlign: 'center', flexShrink: 0,
-                  }}>
-                    {d.decision}
-                  </span>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 12, fontWeight: 600, color: L.text1, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{d.name}</p>
-                    <p style={{ fontSize: 11, color: L.text3, margin: 0 }}>{d.action}</p>
-                  </div>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: d.color, flexShrink: 0 }}>{d.roas}</span>
-                </div>
-              ))}
-
-              {/* Share row */}
-              <div style={{ padding: '10px 16px', background: '#FAFAF8', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
-                <span style={{ fontSize: 11, color: L.amber, fontWeight: 600, cursor: 'pointer' }}>Share report →</span>
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${L.border}`, display: 'flex', justifyContent: 'space-around', fontSize: 11, color: L.text3 }}>
+                <span>Desktop</span>
+                <span>Mobile</span>
+                <span>Tablet</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── STAT STRIP ───────────────────────────────────────────── */}
-      <section style={{ background: L.dark, padding: '56px 24px' }}>
-        <div style={{ maxWidth: 1120, margin: '0 auto' }} className="landing-stats-grid">
-          {[
-            { number: '34%',    label: 'of ad spend wasted',        sub: 'on average by DTC brands' },
-            { number: '60s',    label: 'to get your full analysis',  sub: 'after connecting Meta' },
-            { number: '€8,400', label: 'average savings found',      sub: 'per month per account' },
-          ].map(s => (
-            <div key={s.number}>
-              <div className="font-display" style={{ fontSize: 52, fontWeight: 900, color: L.amberMid, letterSpacing: '-0.04em', lineHeight: 1 }}>
-                {s.number}
+      {/* ── HOW IT WORKS ──────────────────────────────────────────── */}
+      <section style={{ background: L.surface, borderTop: `1px solid ${L.border}`, borderBottom: `1px solid ${L.border}` }}>
+        <div style={{ maxWidth: 1120, margin: '0 auto', padding: '80px 24px' }}>
+          <div style={{ marginBottom: 60, textAlign: 'center' }}>
+            <p style={{ fontSize: 13, color: L.amber, fontWeight: 700, letterSpacing: '0.05em', marginBottom: 8 }}>
+              HOW IT WORKS
+            </p>
+            <h2 style={{ fontSize: 38, fontWeight: 500, lineHeight: 1.1, color: L.text1, letterSpacing: '-0.02em' }}>
+              Three steps to clarity
+            </h2>
+          </div>
+
+          <div className="landing-steps-grid">
+            {STEPS.map((step, i) => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{
+                  fontSize: 48, fontWeight: 300, color: L.amber,
+                  lineHeight: 0.8, letterSpacing: '-0.03em',
+                }}>
+                  {step.n}
+                </div>
+                <div>
+                  <h3 style={{ fontSize: 18, fontWeight: 600, color: L.text1, marginBottom: 8 }}>
+                    {step.title}
+                  </h3>
+                  <p style={{ fontSize: 15, color: L.text2, lineHeight: 1.6 }}>
+                    {step.desc}
+                  </p>
+                </div>
               </div>
-              <div style={{ fontSize: 14, fontWeight: 600, marginTop: 10, color: 'white' }}>{s.label}</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 3 }}>{s.sub}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── DECISIONS ENGINE ──────────────────────────────────────── */}
+      <section style={{ maxWidth: 1120, margin: '0 auto', padding: '80px 24px' }}>
+        <div style={{ marginBottom: 60, textAlign: 'center' }}>
+          <p style={{ fontSize: 13, color: L.amber, fontWeight: 700, letterSpacing: '0.05em', marginBottom: 8 }}>
+            THE DECISION ENGINE
+          </p>
+          <h2 style={{ fontSize: 38, fontWeight: 500, lineHeight: 1.1, color: L.text1, letterSpacing: '-0.02em', marginBottom: 16 }}>
+            Every ad gets one of four decisions
+          </h2>
+          <p style={{ fontSize: 15, color: L.text2, margin: '0 auto', maxWidth: 480, lineHeight: 1.6 }}>
+            Your entire portfolio is analyzed against benchmarks and industry data. Clear, actionable, definitive.
+          </p>
+        </div>
+
+        <div className="landing-decisions-grid">
+          {DECISIONS_EXPLAINED.map((d, i) => (
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 24, background: d.bg, borderRadius: 12, border: `1px solid ${L.border}` }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <div style={{ width: 40, height: 40, borderRadius: 8, background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', color: d.color }}>
+                  {d.icon}
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: d.color, letterSpacing: '0.08em' }}>{d.label}</span>
+              </div>
+              <div>
+                <h3 style={{ fontSize: 18, fontWeight: 600, color: L.text1, marginBottom: 6 }}>
+                  {d.title}
+                </h3>
+                <p style={{ fontSize: 14, color: L.text2, lineHeight: 1.6 }}>
+                  {d.desc}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ─────────────────────────────────────────── */}
-      <section style={{ padding: '96px 24px', borderBottom: `1px solid ${L.border}` }}>
-        <div style={{ maxWidth: 1120, margin: '0 auto' }}>
-          <div style={{ marginBottom: 60 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: L.amber, marginBottom: 14, textTransform: 'uppercase' }}>
-              HOW IT WORKS
-            </p>
-            <h2
-              className="font-display"
-              style={{ fontSize: 'clamp(30px, 3.5vw, 46px)', fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1.1 }}
-            >
-              From connected to confident
-              <br />
-              <em style={{ fontStyle: 'italic', fontWeight: 300 }}>in three steps.</em>
+      {/* ── DECISION EXAMPLE ──────────────────────────────────────── */}
+      <section style={{ background: L.surface, borderTop: `1px solid ${L.border}`, borderBottom: `1px solid ${L.border}` }}>
+        <div style={{ maxWidth: 1120, margin: '0 auto', padding: '80px 24px' }}>
+          <div style={{ marginBottom: 60, textAlign: 'center' }}>
+            <h2 style={{ fontSize: 38, fontWeight: 500, lineHeight: 1.1, color: L.text1, letterSpacing: '-0.02em' }}>
+              Real example: your top decisions today
             </h2>
           </div>
 
-          <div className="landing-steps-grid">
-            {STEPS.map(s => (
-              <div key={s.n} style={{ padding: '32px', background: L.surface, border: `1px solid ${L.border}`, borderRadius: 16 }}>
-                <div className="font-display" style={{ fontSize: 52, fontWeight: 900, color: L.amberMid, letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 20 }}>
-                  {s.n}
-                </div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 10, color: L.text1 }}>{s.title}</h3>
-                <p style={{ fontSize: 14, color: L.text2, lineHeight: 1.7, margin: 0 }}>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── DECISION SYSTEM ──────────────────────────────────────── */}
-      <section style={{ padding: '96px 24px', background: L.surfaceSubtle }}>
-        <div style={{ maxWidth: 1120, margin: '0 auto' }}>
-          <div style={{ marginBottom: 60 }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', color: L.amber, marginBottom: 14, textTransform: 'uppercase' }}>
-              THE DECISION ENGINE
-            </p>
-            <h2
-              className="font-display"
-              style={{ fontSize: 'clamp(30px, 3.5vw, 46px)', fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1.1 }}
-            >
-              Four decisions.
-              <br />
-              <em style={{ fontStyle: 'italic', fontWeight: 300 }}>No ambiguity.</em>
-            </h2>
-          </div>
-
-          <div className="landing-decisions-grid">
-            {DECISIONS_EXPLAINED.map(d => (
-              <div
-                key={d.label}
-                style={{
-                  background: L.surface,
-                  border: `1px solid ${L.border}`,
-                  borderTop: `3px solid ${d.color}`,
-                  borderRadius: 12,
-                  padding: '24px',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 8,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: d.bg, color: d.color, flexShrink: 0,
-                  }}>
-                    {d.icon}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {MOCK_DECISIONS.map((m, i) => (
+              <div key={i} style={{ background: m.bg, border: `1px solid ${L.border}`, borderRadius: 12, padding: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: m.color, letterSpacing: '0.08em' }}>{m.decision}</span>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: L.text1 }}>{m.name}</span>
                   </div>
-                  <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.08em', color: d.color }}>{d.label}</span>
+                  <p style={{ fontSize: 13, color: L.text3 }}>ROAS {m.roas}</p>
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: L.text1 }}>{d.title}</h3>
-                <p style={{ fontSize: 13, color: L.text2, lineHeight: 1.65, margin: 0 }}>{d.desc}</p>
+                <span style={{ fontSize: 14, fontWeight: 600, color: m.color, minWidth: 160, textAlign: 'right' }}>{m.action}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── FINAL CTA ────────────────────────────────────────────── */}
-      <section style={{ padding: '96px 24px', textAlign: 'center', borderTop: `1px solid ${L.border}` }}>
-        <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <h2
-            className="font-display"
-            style={{ fontSize: 'clamp(36px, 4vw, 54px)', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.05, marginBottom: 20 }}
-          >
-            Stop guessing.
-            <br />
-            <em style={{ fontStyle: 'italic', fontWeight: 300 }}>Start winning.</em>
+      {/* ── FOOTER CTA ────────────────────────────────────────────── */}
+      <section style={{ maxWidth: 1120, margin: '0 auto', padding: '80px 24px' }}>
+        <div style={{ textAlign: 'center' }}>
+          <h2 style={{ fontSize: 38, fontWeight: 500, lineHeight: 1.1, color: L.text1, letterSpacing: '-0.02em', marginBottom: 24 }}>
+            Ready to stop wasting money?
           </h2>
-          <p style={{ fontSize: 16, color: L.text2, marginBottom: 40, lineHeight: 1.6 }}>
-            Connect your Meta account. Get your first analysis in 60 seconds.
-            <br />No credit card. No commitment.
+          <p style={{ fontSize: 17, color: L.text2, marginBottom: 32, maxWidth: 480, margin: '0 auto 32px' }}>
+            Start analysing in 60 seconds. Read-only access, no credit card required.
           </p>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <Link
-              href="/onboarding/connect"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 10,
-                background: L.amber, color: 'white', fontWeight: 700, fontSize: 16,
-                padding: '16px 36px', borderRadius: 12, textDecoration: 'none',
-                boxShadow: '0 8px 32px rgba(217,119,6,0.25)',
-              }}
-            >
-              Analyze My Ads Now
-              <ArrowRight size={18} />
-            </Link>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap', justifyContent: 'center' }}>
-              {['Read-only Meta access', 'No credit card', '60-second setup'].map(t => (
-                <span key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: L.text3 }}>
-                  <CheckCircle size={13} style={{ color: L.scale, flexShrink: 0 }} />
-                  {t}
-                </span>
-              ))}
-            </div>
-          </div>
+          <Link
+            href="/onboarding/connect"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              background: L.amber, color: 'white', fontWeight: 700, fontSize: 15,
+              padding: '14px 28px', borderRadius: 10, textDecoration: 'none',
+              boxShadow: '0 4px 24px rgba(217,119,6,0.3)',
+            }}
+          >
+            Analyze My Ads Now
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </section>
 
-      {/* ── FOOTER ───────────────────────────────────────────────── */}
-      <footer style={{ padding: '24px', borderTop: `1px solid ${L.border}`, background: L.dark }}>
-        <div style={{ maxWidth: 1120, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <span className="font-display" style={{ fontSize: 16, fontStyle: 'italic', fontWeight: 700, color: 'white' }}>Lumière</span>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: 0 }}>© 2026 Lumière · Ad Intelligence for DTC Brands</p>
-          <div style={{ display: 'flex', gap: 20 }}>
-            {['Privacy', 'Terms', 'Contact'].map(l => (
-              <a key={l} href="#" style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>{l}</a>
-            ))}
+      {/* ── FOOTER ────────────────────────────────────────────────── */}
+      <footer style={{ background: L.dark, color: '#FFF', borderTop: `1px solid rgba(255,255,255,0.1)` }}>
+        <div style={{ maxWidth: 1120, margin: '0 auto', padding: '32px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12 }}>
+          <span>© 2024 Lumière. All rights reserved.</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+            <a href="#" style={{ color: '#FFF', textDecoration: 'none', opacity: 0.7 }}>Terms</a>
+            <a href="#" style={{ color: '#FFF', textDecoration: 'none', opacity: 0.7 }}>Privacy</a>
+            <a href="#" style={{ color: '#FFF', textDecoration: 'none', opacity: 0.7 }}>Contact</a>
           </div>
         </div>
       </footer>

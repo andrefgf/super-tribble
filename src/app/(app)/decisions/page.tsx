@@ -5,18 +5,17 @@ import { useDataSource } from '@/lib/data-source';
 import { runDecisionEngine } from '@/lib/engine';
 import { Decision } from '@/lib/types';
 import DecisionBadge from '@/components/ui/DecisionBadge';
-import PlatformBadge from '@/components/ui/PlatformBadge';
 import { ChevronDown, ChevronUp, SlidersHorizontal } from 'lucide-react';
 
-type SortKey = 'score' | 'spend' | 'roas' | 'decision';
+type SortKey = 'spend' | 'roas' | 'decision';
 
 export default function DecisionsPage() {
   const { ads, benchmarks } = useDataSource();
   const decisions = useMemo(() => ads.map(ad => runDecisionEngine(ad, benchmarks)), [ads, benchmarks]);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [filter, setFilter]     = useState<Decision | 'ALL'>('ALL');
-  const [sortKey, setSortKey]   = useState<SortKey>('score');
-  const [sortDir, setSortDir]   = useState<'asc' | 'desc'>('desc');
+  const [sortKey, setSortKey]   = useState<SortKey>('decision');
+  const [sortDir, setSortDir]   = useState<'asc' | 'desc'>('asc');
 
   const decisionCounts = useMemo(() => {
     const c: Record<string, number> = { ALL: decisions.length };
@@ -28,7 +27,6 @@ export default function DecisionsPage() {
     const list = filter === 'ALL' ? decisions : decisions.filter(d => d.decision === filter);
     return [...list].sort((a, b) => {
       let av = 0, bv = 0;
-      if (sortKey === 'score')    { av = a.score; bv = b.score; }
       if (sortKey === 'spend')    { av = a.ad.performance.spend; bv = b.ad.performance.spend; }
       if (sortKey === 'roas')     { av = a.ad.performance.roas;  bv = b.ad.performance.roas;  }
       if (sortKey === 'decision') { av = ['SCALE','FIX','HOLD','KILL'].indexOf(a.decision); bv = ['SCALE','FIX','HOLD','KILL'].indexOf(b.decision); }
@@ -38,12 +36,12 @@ export default function DecisionsPage() {
 
   function toggleSort(key: SortKey) {
     if (sortKey === key) setSortDir(d => d === 'desc' ? 'asc' : 'desc');
-    else { setSortKey(key); setSortDir('desc'); }
+    else { setSortKey(key); setSortDir('asc'); }
   }
 
   const SortIcon = ({ k }: { k: SortKey }) =>
     sortKey === k
-      ? <span className="ml-0.5 opacity-70">{sortDir === 'desc' ? '↓' : '↑'}</span>
+      ? <span className="ml-0.5 opacity-60">{sortDir === 'desc' ? '↓' : '↑'}</span>
       : null;
 
   const FILTERS: (Decision | 'ALL')[] = ['ALL', 'SCALE', 'HOLD', 'KILL', 'FIX'];
@@ -51,11 +49,23 @@ export default function DecisionsPage() {
     SCALE: '#34d399', HOLD: '#a5b4fc', KILL: '#fca5a5', FIX: '#fcd34d', ALL: 'var(--text-2)',
   };
 
-  return (
-    <div className="p-8 max-w-7xl animate-fade-up">
+  const DECISION_BORDER: Record<string, string> = {
+    SCALE: '#10b981', HOLD: '#6366f1', KILL: '#ef4444', FIX: '#f59e0b',
+  };
 
-      {/* ── Filter pills ────────────────── */}
-      <div className="flex items-center gap-2 mb-6">
+  return (
+    <div className="p-8 max-w-5xl animate-fade-up">
+
+      {/* ── Header ──────────────────────────────────────────── */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-1)' }}>Decisions</h1>
+        <p className="text-sm" style={{ color: 'var(--text-3)' }}>
+          Every ad scored, ranked, and given a clear action — scale, hold, kill, or fix.
+        </p>
+      </div>
+
+      {/* ── Filter pills ──────────────────────────────────── */}
+      <div className="flex items-center gap-2 mb-6 flex-wrap">
         <SlidersHorizontal size={13} style={{ color: 'var(--text-3)' }} />
         {FILTERS.map(f => {
           const active = filter === f;
@@ -71,129 +81,89 @@ export default function DecisionsPage() {
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: FILTER_COLORS[f] }} />
               )}
               {f}
-              <span className="opacity-50 font-normal">{decisionCounts[f] ?? 0}</span>
+              <span className="opacity-50 font-normal ml-0.5">{decisionCounts[f] ?? 0}</span>
             </button>
           );
         })}
         <span className="ml-auto text-xs" style={{ color: 'var(--text-3)' }}>
-          {filtered.length} result{filtered.length !== 1 ? 's' : ''}
+          {filtered.length} ad{filtered.length !== 1 ? 's' : ''}
         </span>
       </div>
 
-      {/* ── Table ──────────────────────── */}
-      <div className="card-glow rounded-xl overflow-hidden"
+      {/* ── Ad list ───────────────────────────────────────── */}
+      <div className="rounded-2xl overflow-hidden"
         style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
 
-        {/* Header */}
-        <div className="grid grid-cols-12 gap-4 px-5 py-3 text-xs font-semibold uppercase tracking-widest"
-          style={{
-            color: 'var(--text-3)', letterSpacing: '0.07em',
-            background: 'var(--surface-2)', borderBottom: '1px solid var(--border)',
-          }}>
-          <div className="col-span-4">Ad</div>
-          <div className="col-span-1">Platform</div>
-          <div className="col-span-1 cursor-pointer hover:text-white transition-colors"
+        {/* Column headers */}
+        <div className="flex items-center gap-4 px-6 py-3 text-xs font-semibold uppercase tracking-widest"
+          style={{ color: 'var(--text-3)', letterSpacing: '0.07em', background: 'var(--surface-2)', borderBottom: '1px solid var(--border)' }}>
+          <div className="flex-1">Ad</div>
+          <div className="w-20 text-center cursor-pointer hover:text-white transition-colors"
             onClick={() => toggleSort('decision')}>
             Decision <SortIcon k="decision" />
           </div>
-          <div className="col-span-1 cursor-pointer hover:text-white transition-colors text-right"
-            onClick={() => toggleSort('score')}>
-            Score <SortIcon k="score" />
-          </div>
-          <div className="col-span-1 cursor-pointer hover:text-white transition-colors text-right"
+          <div className="w-20 text-right cursor-pointer hover:text-white transition-colors"
             onClick={() => toggleSort('roas')}>
             ROAS <SortIcon k="roas" />
           </div>
-          <div className="col-span-1 text-right">CTR</div>
-          <div className="col-span-1 cursor-pointer hover:text-white transition-colors text-right"
+          <div className="w-20 text-right cursor-pointer hover:text-white transition-colors"
             onClick={() => toggleSort('spend')}>
             Spend <SortIcon k="spend" />
           </div>
-          <div className="col-span-2 text-right">Action</div>
+          <div className="w-32 text-right">Action</div>
+          <div className="w-4" />
         </div>
 
-        {/* Rows */}
         {filtered.map((d, i) => (
           <div key={d.ad.id}>
             <div
-              className="grid grid-cols-12 gap-4 px-5 py-3.5 cursor-pointer transition-colors hover:bg-white/[0.018]"
+              className="flex items-center gap-4 px-6 py-5 cursor-pointer transition-colors hover:bg-white/[0.018]"
               style={{ borderBottom: '1px solid var(--border)' }}
               onClick={() => setExpanded(expanded === d.ad.id ? null : d.ad.id)}
             >
-              {/* Ad name */}
-              <div className="col-span-4 min-w-0 flex items-center gap-3">
-                <div
-                  className="w-1 h-8 rounded-full flex-shrink-0"
-                  style={{
-                    background: d.decision === 'SCALE' ? '#10b981'
-                              : d.decision === 'KILL'  ? '#ef4444'
-                              : d.decision === 'FIX'   ? '#f59e0b'
-                              : '#6366f1',
-                    opacity: 0.6,
-                  }}
-                />
-                <div className="min-w-0">
-                  <p className="text-sm font-medium truncate" style={{ color: 'var(--text-1)' }}>
-                    {d.ad.name}
-                  </p>
-                  <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-3)' }}>
-                    {d.ad.campaign}
-                  </p>
-                </div>
+              {/* Color bar */}
+              <div className="w-0.5 h-10 rounded-full flex-shrink-0"
+                style={{ background: DECISION_BORDER[d.decision], opacity: 0.5 }} />
+
+              {/* Ad name + campaign */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold mb-1 truncate" style={{ color: 'var(--text-1)' }}>
+                  {d.ad.name}
+                </p>
+                <p className="text-xs truncate" style={{ color: 'var(--text-3)' }}>
+                  {d.ad.campaign}
+                </p>
               </div>
 
-              <div className="col-span-1 flex items-center">
-                <PlatformBadge platform={d.ad.platform} />
-              </div>
-
-              <div className="col-span-1 flex items-center">
+              {/* Decision */}
+              <div className="w-20 flex justify-center">
                 <DecisionBadge decision={d.decision} />
               </div>
 
-              {/* Score bar */}
-              <div className="col-span-1 flex items-center justify-end gap-2">
-                <div className="w-10 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-3)' }}>
-                  <div className="h-full rounded-full transition-all"
-                    style={{
-                      width: `${Math.min(d.score, 100)}%`,
-                      background: d.score > 65 ? '#10b981' : d.score > 40 ? '#6366f1' : '#ef4444',
-                    }} />
-                </div>
-                <span className="text-xs font-mono" style={{ color: 'var(--text-1)' }}>{d.score}</span>
-              </div>
-
               {/* ROAS */}
-              <div className="col-span-1 flex items-center justify-end">
-                <span className={`text-sm font-semibold tabular-nums ${d.ad.performance.roas >= benchmarks.medianRoas ? 'text-emerald-400' : 'text-red-400'}`}>
+              <div className="w-20 text-right">
+                <span className={`text-sm font-bold tabular-nums ${d.ad.performance.roas >= benchmarks.medianRoas ? 'text-emerald-400' : 'text-red-400'}`}>
                   {d.ad.performance.roas.toFixed(1)}x
                 </span>
               </div>
 
-              {/* CTR */}
-              <div className="col-span-1 flex items-center justify-end">
-                <span className="text-sm tabular-nums" style={{ color: 'var(--text-1)' }}>
-                  {(d.ad.performance.ctr * 100).toFixed(2)}%
-                </span>
-              </div>
-
               {/* Spend */}
-              <div className="col-span-1 flex items-center justify-end">
+              <div className="w-20 text-right">
                 <span className="text-sm tabular-nums" style={{ color: 'var(--text-1)' }}>
                   €{d.ad.performance.spend.toLocaleString()}
                 </span>
               </div>
 
               {/* Budget action */}
-              <div className="col-span-2 flex items-center justify-end gap-2">
+              <div className="w-32 text-right">
                 <span className="text-sm font-bold tabular-nums"
-                  style={{
-                    color: d.decision === 'SCALE' ? '#34d399'
-                         : d.decision === 'KILL'  ? '#f87171'
-                         : d.decision === 'FIX'   ? '#fbbf24'
-                         : '#a5b4fc',
-                  }}>
+                  style={{ color: d.decision === 'SCALE' ? '#34d399' : d.decision === 'KILL' ? '#f87171' : d.decision === 'FIX' ? '#fbbf24' : '#a5b4fc' }}>
                   {d.budgetSuggestion}
                 </span>
+              </div>
+
+              {/* Chevron */}
+              <div className="w-4 flex justify-end">
                 {expanded === d.ad.id
                   ? <ChevronUp size={13} style={{ color: 'var(--text-3)' }} />
                   : <ChevronDown size={13} style={{ color: 'var(--text-3)' }} />
@@ -201,27 +171,27 @@ export default function DecisionsPage() {
               </div>
             </div>
 
-            {/* Expanded reason panel */}
+            {/* Expanded panel */}
             {expanded === d.ad.id && (
-              <div className="px-5 py-5" style={{ background: 'rgba(255,255,255,0.015)', borderBottom: '1px solid var(--border)' }}>
-                <div className="grid grid-cols-2 gap-8">
+              <div className="px-6 py-6" style={{ background: 'rgba(255,255,255,0.012)', borderBottom: '1px solid var(--border)' }}>
+                <div className="grid grid-cols-2 gap-10">
 
                   {/* Reasons */}
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-widest mb-3"
+                    <p className="text-xs font-semibold uppercase tracking-widest mb-4"
                       style={{ color: 'var(--text-3)', letterSpacing: '0.08em' }}>
                       Why this decision
                     </p>
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {d.reasons.map((r, ri) => (
-                        <li key={ri} className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--text-2)' }}>
-                          <span className="mt-2 w-1 h-1 rounded-full flex-shrink-0" style={{ background: 'var(--brand)' }} />
+                        <li key={ri} className="flex items-start gap-3 text-sm" style={{ color: 'var(--text-2)' }}>
+                          <span className="mt-2 w-1 h-1 rounded-full flex-shrink-0" style={{ background: DECISION_BORDER[d.decision] }} />
                           {r}
                         </li>
                       ))}
                     </ul>
                     {d.fixDiagnosis && (
-                      <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold"
+                      <div className="mt-4 flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold"
                         style={{ background: 'rgba(245,158,11,0.08)', color: '#fcd34d', border: '1px solid rgba(245,158,11,0.15)' }}>
                         Diagnosis: {d.fixDiagnosis}
                       </div>
@@ -230,22 +200,22 @@ export default function DecisionsPage() {
 
                   {/* Metrics vs benchmark */}
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-widest mb-3"
+                    <p className="text-xs font-semibold uppercase tracking-widest mb-4"
                       style={{ color: 'var(--text-3)', letterSpacing: '0.08em' }}>
-                      Performance vs benchmark
+                      vs. benchmark
                     </p>
                     <div className="grid grid-cols-3 gap-2">
                       {[
-                        { label: 'ROAS',      value: d.ad.performance.roas.toFixed(2)+'x',               bench: benchmarks.medianRoas.toFixed(2)+'x', good: d.ad.performance.roas >= benchmarks.medianRoas },
-                        { label: 'CTR',       value: (d.ad.performance.ctr*100).toFixed(2)+'%',           bench: (benchmarks.medianCtr*100).toFixed(2)+'%', good: d.ad.performance.ctr >= benchmarks.medianCtr },
-                        { label: 'CVR',       value: (d.ad.performance.cvr*100).toFixed(2)+'%',           bench: (benchmarks.medianCvr*100).toFixed(2)+'%', good: d.ad.performance.cvr >= benchmarks.medianCvr },
-                        { label: 'CPA',       value: '€'+d.ad.performance.cpa.toFixed(0),                 bench: '€'+benchmarks.medianCpa, good: d.ad.performance.cpa <= benchmarks.medianCpa },
-                        { label: 'Frequency', value: d.ad.performance.frequency.toFixed(1),               bench: '< 3.0', good: d.ad.performance.frequency < 3 },
-                        { label: 'Confidence',value: d.confidence,                                        bench: '', good: d.confidence === 'HIGH' },
+                        { label: 'ROAS',      value: d.ad.performance.roas.toFixed(2)+'x',      bench: benchmarks.medianRoas.toFixed(2)+'x',       good: d.ad.performance.roas >= benchmarks.medianRoas },
+                        { label: 'CTR',       value: (d.ad.performance.ctr*100).toFixed(2)+'%',  bench: (benchmarks.medianCtr*100).toFixed(2)+'%',   good: d.ad.performance.ctr >= benchmarks.medianCtr },
+                        { label: 'CVR',       value: (d.ad.performance.cvr*100).toFixed(2)+'%',  bench: (benchmarks.medianCvr*100).toFixed(2)+'%',   good: d.ad.performance.cvr >= benchmarks.medianCvr },
+                        { label: 'CPA',       value: '€'+d.ad.performance.cpa.toFixed(0),        bench: '€'+benchmarks.medianCpa,                   good: d.ad.performance.cpa <= benchmarks.medianCpa },
+                        { label: 'Frequency', value: d.ad.performance.frequency.toFixed(1),      bench: '< 3.0',                                    good: d.ad.performance.frequency < 3 },
+                        { label: 'Confidence',value: d.confidence,                               bench: '',                                          good: d.confidence === 'HIGH' },
                       ].map(m => (
-                        <div key={m.label} className="rounded-lg p-2.5"
+                        <div key={m.label} className="rounded-xl p-3"
                           style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
-                          <p className="text-xs mb-1" style={{ color: 'var(--text-3)' }}>{m.label}</p>
+                          <p className="text-xs mb-1.5" style={{ color: 'var(--text-3)' }}>{m.label}</p>
                           <p className="text-sm font-bold" style={{ color: m.good ? '#34d399' : '#f87171' }}>
                             {m.value}
                           </p>

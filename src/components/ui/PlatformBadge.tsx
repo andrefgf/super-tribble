@@ -1,9 +1,9 @@
 import { Platform } from '@/lib/types';
 
 const config: Record<Platform, { label: string; color: string; bg: string; border: string }> = {
-  meta:   { label: 'Meta',   color: '#93c5fd', bg: 'rgba(96,165,250,0.08)',  border: 'rgba(96,165,250,0.2)'  },
-  google: { label: 'Google', color: '#86efac', bg: 'rgba(74,222,128,0.08)',  border: 'rgba(74,222,128,0.2)'  },
-  tiktok: { label: 'TikTok', color: '#f9a8d4', bg: 'rgba(244,114,182,0.08)', border: 'rgba(244,114,182,0.2)' },
+  meta:   { label: 'Meta',   color: '#1D4ED8', bg: 'rgba(59,130,246,0.08)',  border: 'rgba(59,130,246,0.20)'  },
+  google: { label: 'Google', color: '#15803D', bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.20)'   },
+  tiktok: { label: 'TikTok', color: '#BE185D', bg: 'rgba(236,72,153,0.08)',  border: 'rgba(236,72,153,0.20)'  },
 };
 
 export default function PlatformBadge({ platform }: { platform: Platform }) {

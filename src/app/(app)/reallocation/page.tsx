@@ -17,13 +17,13 @@ export default function ReallocationPage() {
         <div
           style={{
             width: 56, height: 56, borderRadius: '50%',
-            background: 'rgba(99,102,241,0.1)',
-            border: '1px solid rgba(99,102,241,0.2)',
+            background: 'rgba(217,119,6,0.08)',
+            border: '1px solid rgba(217,119,6,0.18)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             marginBottom: 20,
           }}
         >
-          <Layers size={22} style={{ color: '#818cf8' }} />
+          <Layers size={22} style={{ color: 'var(--brand)' }} />
         </div>
 
         <div
@@ -54,9 +54,9 @@ export default function ReallocationPage() {
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             fontSize: 13, fontWeight: 600,
-            color: 'var(--brand-light)', textDecoration: 'none',
+            color: 'var(--brand)', textDecoration: 'none',
             padding: '8px 16px', borderRadius: 8,
-            border: '1px solid rgba(124,58,237,0.2)',
+            border: '1px solid rgba(217,119,6,0.25)',
           }}
         >
           <ArrowLeft size={13} />

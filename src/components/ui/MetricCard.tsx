@@ -12,7 +12,7 @@ interface MetricCardProps {
 
 export default function MetricCard({
   label, value, sub, trend, icon,
-  accent = '#7c3aed',
+  accent = '#D97706',
   highlight = false,
 }: MetricCardProps) {
   return (
@@ -21,6 +21,7 @@ export default function MetricCard({
       style={{
         background: 'var(--surface-1)',
         border: `1px solid ${highlight ? accent + '30' : 'var(--border)'}`,
+        boxShadow: highlight ? `0 1px 4px rgba(26,25,23,0.06)` : undefined,
       }}
     >
       {/* Subtle top accent line */}
@@ -31,10 +32,10 @@ export default function MetricCard({
         />
       )}
 
-      {/* Faint radial glow behind icon */}
+      {/* Faint radial tint behind icon */}
       <div
         className="absolute -top-4 -right-4 w-24 h-24 rounded-full blur-2xl pointer-events-none"
-        style={{ background: accent + '18' }}
+        style={{ background: accent + '12' }}
       />
 
       <div className="relative flex items-start justify-between mb-3">
@@ -47,7 +48,7 @@ export default function MetricCard({
         {icon && (
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ background: accent + '18', color: accent }}
+            style={{ background: accent + '15', color: accent }}
           >
             {icon}
           </div>
@@ -68,8 +69,8 @@ export default function MetricCard({
               <span
                 className="inline-flex items-center gap-0.5 text-xs font-semibold px-1.5 py-0.5 rounded"
                 style={{
-                  background: trend >= 0 ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)',
-                  color: trend >= 0 ? '#34d399' : '#f87171',
+                  background: trend >= 0 ? 'rgba(5,150,105,0.10)' : 'rgba(220,38,38,0.10)',
+                  color: trend >= 0 ? 'var(--scale)' : 'var(--kill)',
                 }}
               >
                 {trend >= 0 ? '↑' : '↓'} {Math.abs(trend)}%

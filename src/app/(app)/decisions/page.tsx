@@ -46,11 +46,11 @@ export default function DecisionsPage() {
 
   const FILTERS: (Decision | 'ALL')[] = ['ALL', 'SCALE', 'HOLD', 'KILL', 'FIX'];
   const FILTER_COLORS: Record<string, string> = {
-    SCALE: '#34d399', HOLD: '#a5b4fc', KILL: '#fca5a5', FIX: '#fcd34d', ALL: 'var(--text-2)',
+    SCALE: '#059669', HOLD: '#4F46E5', KILL: '#DC2626', FIX: '#D97706', ALL: 'var(--text-2)',
   };
 
   const DECISION_BORDER: Record<string, string> = {
-    SCALE: '#10b981', HOLD: '#6366f1', KILL: '#ef4444', FIX: '#f59e0b',
+    SCALE: '#059669', HOLD: '#4F46E5', KILL: '#DC2626', FIX: '#D97706',
   };
 
   return (
@@ -73,9 +73,9 @@ export default function DecisionsPage() {
             <button key={f} onClick={() => setFilter(f)}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
               style={{
-                background: active ? 'rgba(124,58,237,0.15)' : 'var(--surface-1)',
-                color: active ? 'var(--brand-light)' : 'var(--text-3)',
-                border: `1px solid ${active ? 'rgba(124,58,237,0.35)' : 'var(--border)'}`,
+                background: active ? 'rgba(217,119,6,0.10)' : 'var(--surface-1)',
+                color: active ? 'var(--brand)' : 'var(--text-3)',
+                border: `1px solid ${active ? 'rgba(217,119,6,0.30)' : 'var(--border)'}`,
               }}>
               {f !== 'ALL' && (
                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: FILTER_COLORS[f] }} />
@@ -92,21 +92,21 @@ export default function DecisionsPage() {
 
       {/* ── Ad list ───────────────────────────────────────── */}
       <div className="rounded-2xl overflow-hidden"
-        style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
+        style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(26,25,23,0.06)' }}>
 
         {/* Column headers */}
         <div className="flex items-center gap-4 px-6 py-3 text-xs font-semibold uppercase tracking-widest"
           style={{ color: 'var(--text-3)', letterSpacing: '0.07em', background: 'var(--surface-2)', borderBottom: '1px solid var(--border)' }}>
           <div className="flex-1">Ad</div>
-          <div className="w-20 text-center cursor-pointer hover:text-white transition-colors"
+          <div className="w-20 text-center cursor-pointer hover:text-stone-900 transition-colors"
             onClick={() => toggleSort('decision')}>
             Decision <SortIcon k="decision" />
           </div>
-          <div className="w-20 text-right cursor-pointer hover:text-white transition-colors"
+          <div className="w-20 text-right cursor-pointer hover:text-stone-900 transition-colors"
             onClick={() => toggleSort('roas')}>
             ROAS <SortIcon k="roas" />
           </div>
-          <div className="w-20 text-right cursor-pointer hover:text-white transition-colors"
+          <div className="w-20 text-right cursor-pointer hover:text-stone-900 transition-colors"
             onClick={() => toggleSort('spend')}>
             Spend <SortIcon k="spend" />
           </div>
@@ -117,13 +117,13 @@ export default function DecisionsPage() {
         {filtered.map((d, i) => (
           <div key={d.ad.id}>
             <div
-              className="flex items-center gap-4 px-6 py-5 cursor-pointer transition-colors hover:bg-white/[0.018]"
+              className="flex items-center gap-4 px-6 py-5 cursor-pointer transition-colors hover:bg-black/[0.02]"
               style={{ borderBottom: '1px solid var(--border)' }}
               onClick={() => setExpanded(expanded === d.ad.id ? null : d.ad.id)}
             >
               {/* Color bar */}
               <div className="w-0.5 h-10 rounded-full flex-shrink-0"
-                style={{ background: DECISION_BORDER[d.decision], opacity: 0.5 }} />
+                style={{ background: DECISION_BORDER[d.decision], opacity: 0.6 }} />
 
               {/* Ad name + campaign */}
               <div className="flex-1 min-w-0">
@@ -142,7 +142,8 @@ export default function DecisionsPage() {
 
               {/* ROAS */}
               <div className="w-20 text-right">
-                <span className={`text-sm font-bold tabular-nums ${d.ad.performance.roas >= benchmarks.medianRoas ? 'text-emerald-400' : 'text-red-400'}`}>
+                <span className="text-sm font-bold tabular-nums"
+                  style={{ color: d.ad.performance.roas >= benchmarks.medianRoas ? 'var(--scale)' : 'var(--kill)' }}>
                   {d.ad.performance.roas.toFixed(1)}x
                 </span>
               </div>
@@ -157,7 +158,7 @@ export default function DecisionsPage() {
               {/* Budget action */}
               <div className="w-32 text-right">
                 <span className="text-sm font-bold tabular-nums"
-                  style={{ color: d.decision === 'SCALE' ? '#34d399' : d.decision === 'KILL' ? '#f87171' : d.decision === 'FIX' ? '#fbbf24' : '#a5b4fc' }}>
+                  style={{ color: DECISION_BORDER[d.decision] }}>
                   {d.budgetSuggestion}
                 </span>
               </div>
@@ -173,7 +174,7 @@ export default function DecisionsPage() {
 
             {/* Expanded panel */}
             {expanded === d.ad.id && (
-              <div className="px-6 py-6" style={{ background: 'rgba(255,255,255,0.012)', borderBottom: '1px solid var(--border)' }}>
+              <div className="px-6 py-6" style={{ background: 'rgba(0,0,0,0.015)', borderBottom: '1px solid var(--border)' }}>
                 <div className="grid grid-cols-2 gap-10">
 
                   {/* Reasons */}
@@ -192,7 +193,7 @@ export default function DecisionsPage() {
                     </ul>
                     {d.fixDiagnosis && (
                       <div className="mt-4 flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-semibold"
-                        style={{ background: 'rgba(245,158,11,0.08)', color: '#fcd34d', border: '1px solid rgba(245,158,11,0.15)' }}>
+                        style={{ background: 'var(--fix-bg)', color: '#92400E', border: '1px solid rgba(217,119,6,0.25)' }}>
                         Diagnosis: {d.fixDiagnosis}
                       </div>
                     )}
@@ -216,7 +217,7 @@ export default function DecisionsPage() {
                         <div key={m.label} className="rounded-xl p-3"
                           style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
                           <p className="text-xs mb-1.5" style={{ color: 'var(--text-3)' }}>{m.label}</p>
-                          <p className="text-sm font-bold" style={{ color: m.good ? '#34d399' : '#f87171' }}>
+                          <p className="text-sm font-bold" style={{ color: m.good ? 'var(--scale)' : 'var(--kill)' }}>
                             {m.value}
                           </p>
                           {m.bench && (

@@ -24,18 +24,21 @@ export default function Sidebar() {
       {/* ── Logo ─────────────────────────── */}
       <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid var(--border)' }}>
         <div className="flex items-center gap-2.5">
-          {/* Wordmark icon */}
+          {/* Icon mark */}
           <div
             className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
             style={{
-              background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)',
-              boxShadow: '0 0 12px rgba(124,58,237,0.4)',
+              background: 'linear-gradient(135deg, #D97706 0%, #B45309 100%)',
+              boxShadow: '0 0 10px rgba(217,119,6,0.30)',
             }}
           >
-            L
+            <span className="font-display text-white" style={{ fontStyle: 'italic', fontWeight: 900 }}>L</span>
           </div>
           <div className="leading-none">
-            <span className="text-sm font-semibold tracking-wide" style={{ color: 'var(--text-1)' }}>
+            <span
+              className="font-display text-sm font-bold tracking-tight"
+              style={{ color: 'var(--text-1)', fontStyle: 'italic', letterSpacing: '-0.01em' }}
+            >
               {BRAND_NAME}
             </span>
             <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>Ad Intelligence</p>
@@ -64,15 +67,15 @@ export default function Sidebar() {
               href={href}
               className="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all"
               style={{
-                background: active ? 'rgba(124,58,237,0.12)' : 'transparent',
-                color: active ? 'var(--brand-light)' : 'var(--text-3)',
+                background: active ? 'rgba(217,119,6,0.08)' : 'transparent',
+                color: active ? 'var(--brand)' : 'var(--text-3)',
                 borderLeft: active ? '2px solid var(--brand)' : '2px solid transparent',
               }}
             >
               <Icon
                 size={15}
                 strokeWidth={active ? 2.5 : 2}
-                style={{ color: active ? 'var(--brand-light)' : 'var(--text-3)', flexShrink: 0 }}
+                style={{ color: active ? 'var(--brand)' : 'var(--text-3)', flexShrink: 0 }}
               />
               <span className="font-medium">{label}</span>
             </Link>
@@ -85,7 +88,7 @@ export default function Sidebar() {
         <p className="text-xs font-medium mb-2" style={{ color: 'var(--text-3)' }}>Connected Platforms</p>
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#3b82f6' }} />
-          <span className="text-xs" style={{ color: '#60a5fa' }}>Meta Ads</span>
+          <span className="text-xs" style={{ color: '#2563EB' }}>Meta Ads</span>
         </div>
       </div>
 
@@ -94,7 +97,7 @@ export default function Sidebar() {
         <div className="flex items-center gap-2.5">
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
+            style={{ background: 'linear-gradient(135deg, #D97706, #B45309)', color: 'white' }}
           >
             A
           </div>

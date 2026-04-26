@@ -24,14 +24,12 @@ export default function RevealPage() {
   const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
-    // Small delay to let the "analysing" animation play
     const timer = setTimeout(() => {
       const uploaded = getUploadedData();
       const { ads, benchmarks } =
         uploaded ?? { ads: [], benchmarks: seedBenchmarks };
 
       if (ads.length === 0) {
-        // Nothing to reveal — redirect home
         router.push('/');
         return;
       }
@@ -49,7 +47,6 @@ export default function RevealPage() {
         decisions,
       });
 
-      // Trigger reveal animation after data is set
       setTimeout(() => setRevealed(true), 100);
     }, 800);
 
@@ -60,15 +57,10 @@ export default function RevealPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center"
         style={{ background: 'var(--bg)' }}>
-        {/* Animated glow */}
-        <div className="pointer-events-none fixed inset-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-[120px]"
-            style={{ background: 'rgba(124,58,237,0.10)', animation: 'glow-pulse 2s infinite' }} />
-        </div>
-        <div className="relative text-center">
+        <div className="text-center">
           <div className="w-12 h-12 rounded-2xl mx-auto mb-6 flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
-            <span className="text-xl font-black text-white">L</span>
+            style={{ background: 'linear-gradient(135deg, #D97706, #B45309)', boxShadow: '0 4px 16px rgba(217,119,6,0.25)' }}>
+            <span className="text-xl font-black text-white font-display" style={{ fontStyle: 'italic' }}>L</span>
           </div>
           <p className="text-sm font-medium" style={{ color: 'var(--text-2)' }}>
             Analysing your ad account…
@@ -91,13 +83,6 @@ export default function RevealPage() {
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16"
       style={{ background: 'var(--bg)' }}>
 
-      {/* Ambient glow */}
-      <div className="pointer-events-none fixed inset-0">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-[120px]"
-          style={{ background: revealed ? 'rgba(239,68,68,0.06)' : 'rgba(124,58,237,0.06)',
-                   transition: 'background 1s ease' }} />
-      </div>
-
       <div
         className="relative w-full max-w-2xl"
         style={{
@@ -109,21 +94,17 @@ export default function RevealPage() {
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-10">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center font-black text-sm"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}>
-            L
+            style={{ background: 'linear-gradient(135deg, #D97706, #B45309)', color: 'white' }}>
+            <span className="font-display" style={{ fontStyle: 'italic' }}>L</span>
           </div>
-          <span className="font-semibold text-sm" style={{ color: 'var(--text-1)' }}>Lumière</span>
+          <span className="font-display font-bold text-sm" style={{ color: 'var(--text-1)', fontStyle: 'italic' }}>Lumière</span>
         </div>
 
         {/* Reveal card */}
         <div
           className="rounded-3xl p-8 mb-6 text-center relative overflow-hidden"
-          style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}
+          style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 8px 32px rgba(26,25,23,0.08)' }}
         >
-          {/* Glow */}
-          <div className="pointer-events-none absolute -top-12 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-3xl"
-            style={{ background: 'rgba(239,68,68,0.08)' }} />
-
           <div className="relative">
             <p className="text-xs font-semibold uppercase tracking-widest mb-4"
               style={{ color: 'var(--text-3)', letterSpacing: '0.12em' }}>
@@ -133,8 +114,7 @@ export default function RevealPage() {
             <div className="mb-4">
               <span className="text-7xl font-black tabular-nums"
                 style={{
-                  color: '#ef4444',
-                  textShadow: '0 0 60px rgba(239,68,68,0.30)',
+                  color: 'var(--kill)',
                   lineHeight: 1,
                 }}>
                 €{data.wastedAmount.toLocaleString()}
@@ -153,7 +133,7 @@ export default function RevealPage() {
             <div className="flex items-center justify-center gap-8 mt-6 pt-6"
               style={{ borderTop: '1px solid var(--border)' }}>
               <div>
-                <p className="text-2xl font-black tabular-nums" style={{ color: '#ef4444' }}>
+                <p className="text-2xl font-black tabular-nums" style={{ color: 'var(--kill)' }}>
                   {data.killAds.length}
                 </p>
                 <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>ads to kill</p>
@@ -167,7 +147,7 @@ export default function RevealPage() {
               </div>
               <div className="w-px h-8" style={{ background: 'var(--border)' }} />
               <div>
-                <p className="text-2xl font-black tabular-nums" style={{ color: '#10b981' }}>
+                <p className="text-2xl font-black tabular-nums" style={{ color: 'var(--scale)' }}>
                   {data.totalAds - data.killAds.length}
                 </p>
                 <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>ads to keep or scale</p>
@@ -180,7 +160,7 @@ export default function RevealPage() {
         {data.killAds.length > 0 && (
           <div
             className="rounded-2xl overflow-hidden mb-6"
-            style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}
+            style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(26,25,23,0.06)' }}
           >
             <div className="px-5 py-3.5"
               style={{ borderBottom: '1px solid var(--border)', background: 'var(--surface-2)' }}>
@@ -203,7 +183,7 @@ export default function RevealPage() {
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-semibold tabular-nums" style={{ color: '#ef4444' }}>
+                  <p className="text-sm font-semibold tabular-nums" style={{ color: 'var(--kill)' }}>
                     €{d.ad.performance.spend.toLocaleString()}
                   </p>
                   <p className="text-xs" style={{ color: 'var(--text-3)' }}>
@@ -226,9 +206,9 @@ export default function RevealPage() {
             href="/"
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02]"
             style={{
-              background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+              background: 'linear-gradient(135deg, #D97706, #B45309)',
               color: 'white',
-              boxShadow: '0 4px 20px rgba(124,58,237,0.35)',
+              boxShadow: '0 4px 20px rgba(217,119,6,0.30)',
             }}
           >
             <TrendingUp size={15} />

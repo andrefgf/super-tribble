@@ -4,36 +4,37 @@
 
 /* ─── Brand Design Tokens ───────────────────────────────────────── */
 :root {
-  /* Surfaces */
-  --bg:           #05050e;
-  --surface-1:    #0c0c1a;
-  --surface-2:    #111124;
-  --surface-3:    #161630;
-  --border:       rgba(255,255,255,0.07);
-  --border-hover: rgba(255,255,255,0.12);
+  /* Surfaces — warm editorial light */
+  --bg:           #FAFAF8;
+  --surface-1:    #FFFFFF;
+  --surface-2:    #F5F4F1;
+  --surface-3:    #EEECEA;
+  --border:       #E5E3DF;
+  --border-hover: #CBC8C3;
 
-  /* Brand palette — Lumière */
-  --brand:        #7c3aed;
-  --brand-light:  #a78bfa;
-  --brand-glow:   rgba(124,58,237,0.25);
+  /* Brand palette — Lumière amber */
+  --brand:        #D97706;
+  --brand-light:  #B45309;
+  --brand-glow:   rgba(217,119,6,0.20);
 
-  /* Semantic */
-  --scale:   #10b981;
-  --scale-bg: rgba(16,185,129,0.08);
-  --kill:    #ef4444;
-  --kill-bg:  rgba(239,68,68,0.08);
-  --hold:    #6366f1;
-  --hold-bg:  rgba(99,102,241,0.08);
-  --fix:     #f59e0b;
-  --fix-bg:   rgba(245,158,11,0.08);
+  /* Semantic decision colors */
+  --scale:    #059669;
+  --scale-bg: #ECFDF5;
+  --kill:     #DC2626;
+  --kill-bg:  #FEF2F2;
+  --hold:     #4F46E5;
+  --hold-bg:  #EEF2FF;
+  --fix:      #D97706;
+  --fix-bg:   #FFFBEB;
 
   /* Text */
-  --text-1: #f4f4f8;
-  --text-2: #9ca3b0;
-  --text-3: #4b5263;
+  --text-1: #1A1917;
+  --text-2: #57534E;
+  --text-3: #A8A29E;
 
   /* Typography */
-  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --font:         'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
 
   /* Spacing (8pt grid) */
   --s-1: 0.25rem;
@@ -82,11 +83,11 @@ body {
 /* ─── Selection ──────────────────────────────────────────────────── */
 ::selection { background: var(--brand-glow); color: var(--text-1); }
 
-/* ─── Global subtle grid bg ─────────────────────────────────────── */
+/* ─── Subtle grid bg ─────────────────────────────────────────────── */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
@@ -144,12 +145,12 @@ body {
   .landing-decisions-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ─── Card hover glow ────────────────────────────────────────────── */
+/* ─── Card hover ─────────────────────────────────────────────────── */
 .card-glow {
   position: relative;
   transition: border-color var(--t-base), box-shadow var(--t-base);
 }
 .card-glow:hover {
   border-color: var(--border-hover) !important;
-  box-shadow: 0 0 0 1px rgba(124,58,237,0.1), 0 8px 32px rgba(0,0,0,0.4);
+  box-shadow: 0 0 0 1px rgba(217,119,6,0.08), 0 4px 16px rgba(26,25,23,0.08);
 }

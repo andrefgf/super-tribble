@@ -1,10 +1,10 @@
 import { Decision } from '@/lib/types';
 
 const config: Record<Decision, { bg: string; text: string; border: string; dot: string }> = {
-  SCALE: { bg: 'rgba(16,185,129,0.1)',  text: '#34d399', border: 'rgba(16,185,129,0.25)',  dot: '#10b981' },
-  HOLD:  { bg: 'rgba(99,102,241,0.1)',  text: '#a5b4fc', border: 'rgba(99,102,241,0.25)',  dot: '#6366f1' },
-  KILL:  { bg: 'rgba(239,68,68,0.1)',   text: '#fca5a5', border: 'rgba(239,68,68,0.25)',   dot: '#ef4444' },
-  FIX:   { bg: 'rgba(245,158,11,0.1)',  text: '#fcd34d', border: 'rgba(245,158,11,0.25)',  dot: '#f59e0b' },
+  SCALE: { bg: '#ECFDF5', text: '#065F46', border: '#A7F3D0', dot: '#059669' },
+  HOLD:  { bg: '#EEF2FF', text: '#3730A3', border: '#C7D2FE', dot: '#4F46E5' },
+  KILL:  { bg: '#FEF2F2', text: '#991B1B', border: '#FECACA', dot: '#DC2626' },
+  FIX:   { bg: '#FFFBEB', text: '#92400E', border: '#FDE68A', dot: '#D97706' },
 };
 
 export default function DecisionBadge({ decision, size = 'sm' }: { decision: Decision; size?: 'sm' | 'md' }) {

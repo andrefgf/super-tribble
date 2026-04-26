@@ -27,7 +27,7 @@ export default function DemoBanner() {
     }
   }, []);
 
-  if (source === null) return null; // wait for hydration
+  if (source === null) return null;
 
   function handleReset() {
     clearUpload();
@@ -43,19 +43,19 @@ export default function DemoBanner() {
       <div
         className="flex items-center justify-between px-4 py-2 text-xs"
         style={{
-          background: 'rgba(16,185,129,0.08)',
-          borderBottom: '1px solid rgba(16,185,129,0.15)',
-          color: '#34d399',
+          background: 'var(--scale-bg)',
+          borderBottom: '1px solid rgba(5,150,105,0.2)',
+          color: '#065F46',
         }}
       >
         <span className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--scale)' }} />
           Showing your CSV upload{date ? ` · uploaded at ${date}` : ''}
         </span>
         <button
           onClick={handleReset}
           className="flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity"
-          style={{ color: '#34d399' }}
+          style={{ color: '#065F46' }}
         >
           <X size={11} />
           Reset to demo
@@ -68,8 +68,8 @@ export default function DemoBanner() {
     <div
       className="flex items-center justify-between px-4 py-2 text-xs"
       style={{
-        background: 'rgba(124,58,237,0.06)',
-        borderBottom: '1px solid rgba(124,58,237,0.12)',
+        background: 'rgba(217,119,6,0.05)',
+        borderBottom: '1px solid rgba(217,119,6,0.15)',
         color: 'var(--text-3)',
       }}
     >
@@ -79,7 +79,7 @@ export default function DemoBanner() {
       <a
         href="/onboarding/connect"
         className="flex items-center gap-1 font-semibold transition-opacity hover:opacity-80"
-        style={{ color: 'var(--brand-light)' }}
+        style={{ color: 'var(--brand)' }}
       >
         <Upload size={11} />
         Upload CSV

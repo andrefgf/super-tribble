@@ -42,8 +42,8 @@ export default function SharedReportPage() {
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
         <div className="text-center">
           <div className="w-10 h-10 rounded-xl mx-auto mb-4 flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
-            <span className="text-base font-black text-white">L</span>
+            style={{ background: 'linear-gradient(135deg, #D97706, #B45309)', boxShadow: '0 4px 16px rgba(217,119,6,0.25)' }}>
+            <span className="font-display text-base font-black text-white" style={{ fontStyle: 'italic' }}>L</span>
           </div>
           <p className="text-sm" style={{ color: 'var(--text-3)' }}>Loading report…</p>
         </div>
@@ -56,8 +56,8 @@ export default function SharedReportPage() {
       <div className="min-h-screen flex items-center justify-center px-4" style={{ background: 'var(--bg)' }}>
         <div className="text-center max-w-sm">
           <div className="w-10 h-10 rounded-xl mx-auto mb-4 flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
-            <span className="text-base font-black text-white">L</span>
+            style={{ background: 'linear-gradient(135deg, #D97706, #B45309)' }}>
+            <span className="font-display text-base font-black text-white" style={{ fontStyle: 'italic' }}>L</span>
           </div>
           <h1 className="text-base font-bold mb-2" style={{ color: 'var(--text-1)' }}>
             Report not found
@@ -66,7 +66,7 @@ export default function SharedReportPage() {
             This link may have expired (reports last 30 days) or the URL is incorrect.
           </p>
           <a href="/" className="inline-block mt-4 text-xs font-semibold px-4 py-2 rounded-lg"
-            style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)' }}>
+            style={{ background: 'rgba(217,119,6,0.10)', color: 'var(--brand)', border: '1px solid rgba(217,119,6,0.25)' }}>
             Create your own report →
           </a>
         </div>
@@ -96,19 +96,20 @@ export default function SharedReportPage() {
       <div
         className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 text-xs"
         style={{
-          background: 'rgba(10,10,15,0.8)',
+          background: 'rgba(250,250,248,0.92)',
           backdropFilter: 'blur(12px)',
           borderBottom: '1px solid var(--border)',
+          boxShadow: '0 1px 0 var(--border)',
         }}
       >
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 rounded-md flex items-center justify-center font-black text-xs"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}>
-            L
+            style={{ background: 'linear-gradient(135deg, #D97706, #B45309)', color: 'white' }}>
+            <span className="font-display" style={{ fontStyle: 'italic' }}>L</span>
           </div>
-          <span className="font-semibold" style={{ color: 'var(--text-1)' }}>Lumière</span>
+          <span className="font-display font-bold" style={{ color: 'var(--text-1)', fontStyle: 'italic' }}>Lumière</span>
           <span className="px-2 py-0.5 rounded-full font-semibold"
-            style={{ background: 'rgba(124,58,237,0.12)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)' }}>
+            style={{ background: 'rgba(217,119,6,0.10)', color: 'var(--brand)', border: '1px solid rgba(217,119,6,0.20)' }}>
             Shared Report
           </span>
         </div>
@@ -119,8 +120,8 @@ export default function SharedReportPage() {
           </span>
           <span>{viewCount} view{viewCount !== 1 ? 's' : ''}</span>
           <a href="/"
-            className="font-semibold px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}>
+            className="font-semibold px-3 py-1.5 rounded-lg transition-all hover:opacity-90"
+            style={{ background: 'linear-gradient(135deg, #D97706, #B45309)', color: 'white', boxShadow: '0 2px 8px rgba(217,119,6,0.25)' }}>
             Try Lumière →
           </a>
         </div>
@@ -132,18 +133,17 @@ export default function SharedReportPage() {
         {/* Hero */}
         <div className="rounded-2xl p-6 mb-8 relative overflow-hidden"
           style={{
-            background: 'linear-gradient(135deg, var(--surface-2) 0%, var(--surface-3) 100%)',
+            background: 'var(--surface-1)',
             border: '1px solid var(--border)',
+            boxShadow: '0 1px 4px rgba(26,25,23,0.06)',
           }}>
-          <div className="pointer-events-none absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl"
-            style={{ background: 'rgba(124,58,237,0.12)' }} />
           <div className="relative">
             <h1 className="text-xl font-bold mb-1" style={{ color: 'var(--text-1)' }}>
               Ad Performance Report
             </h1>
             <p className="text-sm" style={{ color: 'var(--text-2)' }}>
               {ads.length} ads analysed · {portfolio.decisions.KILL} to kill · {portfolio.decisions.SCALE} to scale
-              {' '}· <span style={{ color: '#f87171', fontWeight: 600 }}>
+              {' '}· <span style={{ color: 'var(--kill)', fontWeight: 600 }}>
                 €{portfolio.spendOnLosers.toLocaleString()} in wasted spend detected
               </span>
             </p>
@@ -153,13 +153,13 @@ export default function SharedReportPage() {
         {/* KPIs */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           <MetricCard label="Total Spend"         value={`€${(portfolio.totalSpend/1000).toFixed(1)}k`}
-            sub="period analysed"     icon={<DollarSign size={14}/>} accent="#6366f1" />
+            sub="period analysed"     icon={<DollarSign size={14}/>} accent="#4F46E5" />
           <MetricCard label="Portfolio ROAS"       value={portfolio.overallRoas.toFixed(2)+'x'}
-            sub="overall"             icon={<TrendingUp size={14}/>} accent="#10b981" highlight />
+            sub="overall"             icon={<TrendingUp size={14}/>} accent="#059669" highlight />
           <MetricCard label="Wasted Spend"         value={`€${portfolio.spendOnLosers.toLocaleString()}`}
-            sub="on KILL candidates"  icon={<Target size={14}/>}    accent="#ef4444" />
+            sub="on KILL candidates"  icon={<Target size={14}/>}    accent="#DC2626" />
           <MetricCard label="Reallocation Opp."    value={`€${portfolio.reallocationAmount.toLocaleString()}`}
-            sub="ready to shift"      icon={<Zap size={14}/>}       accent="#f59e0b" highlight />
+            sub="ready to shift"      icon={<Zap size={14}/>}       accent="#D97706" highlight />
         </div>
 
         {/* Forecast */}
@@ -167,7 +167,7 @@ export default function SharedReportPage() {
 
         {/* Top decisions table */}
         <div className="rounded-xl overflow-hidden mb-8"
-          style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
+          style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(26,25,23,0.06)' }}>
           <div className="px-5 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
             <h3 className="text-sm font-semibold" style={{ color: 'var(--text-1)' }}>Priority Actions</h3>
             <p className="text-xs mt-0.5" style={{ color: 'var(--text-3)' }}>
@@ -193,7 +193,7 @@ export default function SharedReportPage() {
               </div>
               <div className="text-right w-16">
                 <p className="text-sm font-bold tabular-nums"
-                  style={{ color: d.decision === 'SCALE' ? '#34d399' : d.decision === 'KILL' ? '#f87171' : '#fbbf24' }}>
+                  style={{ color: d.decision === 'SCALE' ? 'var(--scale)' : d.decision === 'KILL' ? 'var(--kill)' : 'var(--fix)' }}>
                   {d.ad.performance.roas.toFixed(1)}x
                 </p>
                 <p className="text-xs" style={{ color: 'var(--text-3)' }}>ROAS</p>
@@ -213,9 +213,9 @@ export default function SharedReportPage() {
           <a href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02]"
             style={{
-              background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+              background: 'linear-gradient(135deg, #D97706, #B45309)',
               color: 'white',
-              boxShadow: '0 4px 20px rgba(124,58,237,0.3)',
+              boxShadow: '0 4px 20px rgba(217,119,6,0.25)',
             }}>
             Try Lumière free →
           </a>

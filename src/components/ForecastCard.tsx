@@ -6,9 +6,9 @@ import { computeForecast } from '@/lib/forecast';
 import { TrendingUp } from 'lucide-react';
 
 const CONFIDENCE_CONFIG = {
-  HIGH:   { color: '#10b981', label: 'Confidence: HIGH',          opacity: 1   },
-  MEDIUM: { color: '#f59e0b', label: 'Confidence: MEDIUM',        opacity: 1   },
-  LOW:    { color: '#6366f1', label: 'Estimate — needs more data', opacity: 0.7 },
+  HIGH:   { color: '#059669', label: 'Confidence: HIGH',          opacity: 1   },
+  MEDIUM: { color: '#D97706', label: 'Confidence: MEDIUM',        opacity: 1   },
+  LOW:    { color: '#4F46E5', label: 'Estimate — needs more data', opacity: 0.7 },
 };
 
 interface Props {
@@ -30,15 +30,15 @@ export default function ForecastCard({ decisions, benchmarks, daysOfData = 14 }:
     return (
       <div
         className="rounded-2xl p-6 mb-8"
-        style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}
+        style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(26,25,23,0.06)' }}
       >
         <div className="flex items-center gap-2 mb-2">
-          <TrendingUp size={15} style={{ color: '#10b981' }} />
+          <TrendingUp size={15} style={{ color: 'var(--scale)' }} />
           <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--text-3)', letterSpacing: '0.08em' }}>
             Projected 30-Day Uplift
           </span>
         </div>
-        <p className="text-sm" style={{ color: '#10b981' }}>
+        <p className="text-sm" style={{ color: 'var(--scale)' }}>
           No major optimisation opportunities detected. Your account is performing above benchmark — keep running.
         </p>
       </div>
@@ -48,19 +48,19 @@ export default function ForecastCard({ decisions, benchmarks, daysOfData = 14 }:
   return (
     <div
       className="rounded-2xl p-6 mb-8 relative overflow-hidden"
-      style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}
+      style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(26,25,23,0.06)' }}
     >
-      {/* Subtle glow */}
+      {/* Subtle tint */}
       <div
         className="pointer-events-none absolute -top-10 -right-10 w-48 h-48 rounded-full blur-3xl"
-        style={{ background: 'rgba(16,185,129,0.06)' }}
+        style={{ background: 'rgba(5,150,105,0.04)' }}
       />
 
       <div className="relative">
         {/* Header row */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <TrendingUp size={15} style={{ color: '#10b981' }} />
+            <TrendingUp size={15} style={{ color: 'var(--scale)' }} />
             <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--text-3)', letterSpacing: '0.08em' }}>
               Projected 30-Day Uplift
             </span>
@@ -82,9 +82,8 @@ export default function ForecastCard({ decisions, benchmarks, daysOfData = 14 }:
           <span
             className="text-5xl font-black tabular-nums"
             style={{
-              color: '#10b981',
+              color: 'var(--scale)',
               opacity: conf.opacity,
-              textShadow: '0 0 32px rgba(16,185,129,0.25)',
             }}
           >
             +{fmt(forecast.upliftEur)}
@@ -109,7 +108,7 @@ export default function ForecastCard({ decisions, benchmarks, daysOfData = 14 }:
                 <span style={{ color: 'var(--text-2)' }}>
                   Recovered waste (kill {decisions.filter(d => d.decision === 'KILL').length} loser{decisions.filter(d => d.decision === 'KILL').length !== 1 ? 's' : ''})
                 </span>
-                <span className="font-semibold tabular-nums" style={{ color: '#ef4444' }}>
+                <span className="font-semibold tabular-nums" style={{ color: 'var(--kill)' }}>
                   {fmt(forecast.breakdown.wasteRecovered)} freed
                 </span>
               </div>
@@ -117,7 +116,7 @@ export default function ForecastCard({ decisions, benchmarks, daysOfData = 14 }:
             {forecast.hasKills && (
               <div className="flex justify-between text-xs">
                 <span style={{ color: 'var(--text-2)' }}>Reallocate to winners (at their ROAS)</span>
-                <span className="font-semibold tabular-nums" style={{ color: '#10b981' }}>
+                <span className="font-semibold tabular-nums" style={{ color: 'var(--scale)' }}>
                   +{fmt(forecast.breakdown.reallocationRevenue)}
                 </span>
               </div>
@@ -127,7 +126,7 @@ export default function ForecastCard({ decisions, benchmarks, daysOfData = 14 }:
                 <span style={{ color: 'var(--text-2)' }}>
                   Scale {decisions.filter(d => d.decision === 'SCALE').length} top performer{decisions.filter(d => d.decision === 'SCALE').length !== 1 ? 's' : ''} +30%
                 </span>
-                <span className="font-semibold tabular-nums" style={{ color: '#10b981' }}>
+                <span className="font-semibold tabular-nums" style={{ color: 'var(--scale)' }}>
                   +{fmt(forecast.breakdown.scaleBoost)}
                 </span>
               </div>

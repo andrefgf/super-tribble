@@ -9,11 +9,10 @@ interface Props {
 }
 
 export default function SlackAlertSection({ decisions }: Props) {
-  const [email, setEmail]         = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [email, setEmail]           = useState('');
+  const [submitted, setSubmitted]   = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Top 3 highest-priority decisions for the mock
   const mockDecisions = useMemo(() => {
     const top = decisions
       .filter(d => d.decision === 'KILL' || d.decision === 'SCALE' || d.decision === 'FIX')
@@ -58,7 +57,7 @@ export default function SlackAlertSection({ decisions }: Props) {
   return (
     <div
       className="rounded-2xl p-6 mb-8"
-      style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}
+      style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(26,25,23,0.06)' }}
     >
       {/* Heading */}
       <div className="mb-5">
@@ -68,7 +67,7 @@ export default function SlackAlertSection({ decisions }: Props) {
           </span>
           <span
             className="text-xs px-2 py-0.5 rounded-full font-semibold"
-            style={{ background: 'rgba(124,58,237,0.12)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)' }}
+            style={{ background: 'rgba(217,119,6,0.10)', color: 'var(--brand)', border: '1px solid rgba(217,119,6,0.20)' }}
           >
             Q2 2026
           </span>
@@ -85,7 +84,7 @@ export default function SlackAlertSection({ decisions }: Props) {
       {/* Email capture */}
       <div className="mb-5">
         {submitted ? (
-          <p className="text-sm" style={{ color: '#10b981' }}>
+          <p className="text-sm" style={{ color: 'var(--scale)' }}>
             ✓ You&apos;re on the list — we&apos;ll notify you when Slack integration launches.
           </p>
         ) : (
@@ -107,7 +106,7 @@ export default function SlackAlertSection({ decisions }: Props) {
               type="submit"
               disabled={submitting}
               className="px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
+              style={{ background: 'var(--brand)', color: 'white', boxShadow: '0 2px 12px rgba(217,119,6,0.25)' }}
             >
               {submitting ? '…' : 'Notify me →'}
             </button>

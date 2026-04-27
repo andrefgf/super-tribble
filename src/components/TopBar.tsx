@@ -18,9 +18,10 @@ export default function TopBar() {
     <header
       className="sticky top-0 z-10 flex items-center justify-between px-8 py-3"
       style={{
-        background: 'rgba(5,5,14,0.85)',
+        background: 'rgba(250,250,248,0.92)',
         backdropFilter: 'blur(12px)',
         borderBottom: '1px solid var(--border)',
+        boxShadow: '0 1px 0 var(--border)',
       }}
     >
       <div>
@@ -40,13 +41,13 @@ export default function TopBar() {
 
         {/* Notifications */}
         <button
-          className="relative w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-white/5"
+          className="relative w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-black/5"
           aria-label="Notifications"
         >
           <Bell size={14} style={{ color: 'var(--text-2)' }} />
           <span
             className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
-            style={{ background: '#ef4444' }}
+            style={{ background: 'var(--kill)' }}
           />
         </button>
 

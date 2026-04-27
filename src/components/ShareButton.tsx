@@ -18,7 +18,7 @@ export default function ShareButton({ ads, benchmarks }: Props) {
 
   async function handleOpen() {
     setOpen(true);
-    if (url) return; // already generated
+    if (url) return;
 
     setLoading(true);
     setError(null);
@@ -54,8 +54,8 @@ export default function ShareButton({ ads, benchmarks }: Props) {
     <>
       <button
         onClick={handleOpen}
-        className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-all hover:bg-violet-500/10"
-        style={{ color: 'var(--brand-light)', border: '1px solid rgba(124,58,237,0.2)' }}
+        className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-all hover:bg-amber-500/10"
+        style={{ color: 'var(--brand)', border: '1px solid rgba(217,119,6,0.25)' }}
       >
         <Share2 size={12} />
         Share report
@@ -66,14 +66,14 @@ export default function ShareButton({ ads, benchmarks }: Props) {
           {/* Backdrop */}
           <div
             className="absolute inset-0"
-            style={{ background: 'rgba(0,0,0,0.6)' }}
+            style={{ background: 'rgba(26,25,23,0.4)' }}
             onClick={() => setOpen(false)}
           />
 
           {/* Modal */}
           <div
             className="relative w-full max-w-md rounded-2xl p-6"
-            style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}
+            style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 8px 32px rgba(26,25,23,0.12)' }}
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold" style={{ color: 'var(--text-1)' }}>
@@ -95,7 +95,7 @@ export default function ShareButton({ ads, benchmarks }: Props) {
             )}
 
             {error && (
-              <div className="py-4 text-center text-xs" style={{ color: '#f87171' }}>
+              <div className="py-4 text-center text-xs" style={{ color: 'var(--kill)' }}>
                 {error}
               </div>
             )}
@@ -113,8 +113,8 @@ export default function ShareButton({ ads, benchmarks }: Props) {
                     onClick={handleCopy}
                     className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-all"
                     style={{
-                      background: copied ? 'rgba(16,185,129,0.15)' : 'rgba(124,58,237,0.15)',
-                      color: copied ? '#10b981' : '#a78bfa',
+                      background: copied ? 'rgba(5,150,105,0.12)' : 'rgba(217,119,6,0.10)',
+                      color: copied ? 'var(--scale)' : 'var(--brand)',
                     }}
                   >
                     {copied ? <Check size={12} /> : <Copy size={12} />}

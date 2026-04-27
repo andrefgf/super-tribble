@@ -70,15 +70,15 @@ export default function IndustryBenchmarkCard({ accountBenchmarks }: Props) {
   ];
 
   function pctLabel(pct: number): { text: string; color: string } {
-    if (pct >= 75) return { text: `Top ${100 - pct}%`,  color: '#10b981' };
-    if (pct >= 50) return { text: 'Above median',       color: '#f59e0b' };
-    return         { text: `Bottom ${pct}%`,            color: '#ef4444' };
+    if (pct >= 75) return { text: `Top ${100 - pct}%`,  color: '#059669' };
+    if (pct >= 50) return { text: 'Above median',       color: '#D97706' };
+    return         { text: `Bottom ${pct}%`,            color: '#DC2626' };
   }
 
   return (
     <div
       className="rounded-2xl p-6 mb-8"
-      style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}
+      style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(26,25,23,0.06)' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
@@ -128,7 +128,7 @@ export default function IndustryBenchmarkCard({ accountBenchmarks }: Props) {
                   <span
                     className="font-semibold px-2 py-0.5 rounded-full text-xs"
                     style={{
-                      background: label.color + '18',
+                      background: label.color + '15',
                       color: label.color,
                       border: `1px solid ${label.color}30`,
                     }}
@@ -144,8 +144,8 @@ export default function IndustryBenchmarkCard({ accountBenchmarks }: Props) {
                 <div
                   className="absolute inset-0 rounded-full"
                   style={{
-                    background: 'linear-gradient(90deg, #ef4444 0%, #f59e0b 40%, #10b981 100%)',
-                    opacity: 0.25,
+                    background: 'linear-gradient(90deg, #DC2626 0%, #D97706 40%, #059669 100%)',
+                    opacity: 0.20,
                   }}
                 />
                 {/* Position indicator */}
@@ -154,7 +154,7 @@ export default function IndustryBenchmarkCard({ accountBenchmarks }: Props) {
                   style={{
                     left: `clamp(6px, calc(${pct}% - 6px), calc(100% - 6px))`,
                     background: label.color,
-                    boxShadow: `0 0 8px ${label.color}80`,
+                    boxShadow: `0 0 6px ${label.color}50`,
                   }}
                 />
               </div>

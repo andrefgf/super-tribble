@@ -43,9 +43,9 @@ export default function CreativesPage() {
     type === 'video' ? <Video size={15} /> : type === 'carousel' ? <LayoutGrid size={15} /> : <Image size={15} />;
 
   const FATIGUE_CONFIG = {
-    HIGH:   { icon: <AlertTriangle size={11}/>, color: '#fca5a5', bg: 'rgba(239,68,68,0.08)',  border: 'rgba(239,68,68,0.15)',  label: 'Fatigued' },
-    MEDIUM: { icon: <Clock size={11}/>,          color: '#fcd34d', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.15)', label: 'Watch' },
-    LOW:    { icon: <CheckCircle size={11}/>,    color: '#86efac', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.15)', label: 'Fresh' },
+    HIGH:   { icon: <AlertTriangle size={11}/>, color: '#991B1B', bg: 'rgba(220,38,38,0.06)',  border: 'rgba(220,38,38,0.18)',  label: 'Fatigued' },
+    MEDIUM: { icon: <Clock size={11}/>,          color: '#92400E', bg: 'rgba(217,119,6,0.06)',  border: 'rgba(217,119,6,0.18)',  label: 'Watch' },
+    LOW:    { icon: <CheckCircle size={11}/>,    color: '#065F46', bg: 'rgba(5,150,105,0.06)',  border: 'rgba(5,150,105,0.18)',  label: 'Fresh' },
   } as const;
 
   return (
@@ -65,13 +65,13 @@ export default function CreativesPage() {
           const fat = FATIGUE_CONFIG[c.fatigueScore as keyof typeof FATIGUE_CONFIG];
           return (
             <div key={c.id} className="rounded-2xl overflow-hidden"
-              style={{ background: 'var(--surface-1)', border: '1px solid var(--border)' }}>
+              style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', boxShadow: '0 1px 4px rgba(26,25,23,0.06)' }}>
 
               <div className="flex items-center gap-5 px-6 py-5">
 
                 {/* Type icon */}
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'var(--surface-2)', color: 'var(--brand-light)', border: '1px solid var(--border)' }}>
+                  style={{ background: 'var(--surface-2)', color: 'var(--brand)', border: '1px solid var(--border)' }}>
                   <TypeIcon type={c.type} />
                 </div>
 
@@ -93,7 +93,7 @@ export default function CreativesPage() {
                 <div className="text-right flex-shrink-0">
                   <p className="text-xs mb-1" style={{ color: 'var(--text-3)' }}>Avg ROAS</p>
                   <p className="text-base font-bold tabular-nums"
-                    style={{ color: c.avgRoas >= benchmarks.medianRoas ? '#34d399' : '#f87171' }}>
+                    style={{ color: c.avgRoas >= benchmarks.medianRoas ? 'var(--scale)' : 'var(--kill)' }}>
                     {c.avgRoas.toFixed(2)}x
                   </p>
                 </div>
@@ -105,7 +105,7 @@ export default function CreativesPage() {
                     {(c.avgCtr * 100).toFixed(2)}%
                   </p>
                   <p className="text-xs tabular-nums"
-                    style={{ color: c.ctrTrend >= 0 ? '#34d399' : '#f87171' }}>
+                    style={{ color: c.ctrTrend >= 0 ? 'var(--scale)' : 'var(--kill)' }}>
                     {c.ctrTrend >= 0 ? '▲' : '▼'} {Math.abs(c.ctrTrend * 100).toFixed(1)}%
                   </p>
                 </div>

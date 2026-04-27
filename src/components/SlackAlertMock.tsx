@@ -49,9 +49,9 @@ export default function SlackAlertMock({
         <div className="flex items-center gap-2 mb-2">
           <div
             className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: 'white' }}
+            style={{ background: 'linear-gradient(135deg, #D97706, #B45309)', color: 'white' }}
           >
-            L
+            <span className="font-display" style={{ fontStyle: 'italic', fontWeight: 900 }}>L</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-bold" style={{ color: '#D1D2D3', fontSize: 15 }}>Lumière</span>
